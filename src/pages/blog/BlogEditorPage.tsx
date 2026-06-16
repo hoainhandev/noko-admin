@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { Eye, Save } from 'lucide-react'
 import { toast } from 'sonner'
@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { RichTextEditor } from '@/components/editor/RichTextEditor'
 
 const BLOG_CATEGORIES = ['Tin tức', 'Hướng dẫn', 'Case study', 'Sản phẩm', 'Academy']
 
@@ -24,9 +25,10 @@ export function BlogEditorPage() {
 
   const [loading, setLoading] = useState(!isNew)
   const [saving, setSaving] = useState(false)
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null)
   const [previewOpen, setPreviewOpen] = useState(false)
   const [slugManual, setSlugManual] = useState(false)
-  const autoSaveRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const postIdRef = useRef(id)
 
   const [form, setForm] = useState({
     title: '',
@@ -38,6 +40,9 @@ export function BlogEditorPage() {
     status: 'draft' as BlogStatus,
     tags: '',
   })
+
+  const formRef = useRef(form)
+  formRef.current = form
 
   useEffect(() => {
     if (isNew) return
@@ -72,57 +77,83 @@ export function BlogEditorPage() {
     }
   }, [form.title, slugManual])
 
-  const save = async (silent = false) => {
-    if (!form.title.trim()) {
-      if (!silent) toast.error('Vui lòng nhập tiêu đề')
-      return false
-    }
-
-    setSaving(true)
-    const payload = {
-      title: form.title,
-      slug: form.slug || slugify(form.title),
-      category: form.category,
-      thumbnail: form.thumbnail || null,
-      summary: form.summary,
-      content: form.content,
-      status: form.status,
-      tags: form.tags.split(',').map((t) => t.trim()).filter(Boolean),
-      author_id: user?.id ?? null,
-      published_at: form.status === 'published' ? new Date().toISOString() : null,
-    }
-
-    let error
-    if (isNew) {
-      const { data, error: insertError } = await supabase.from('blog_posts').insert(payload).select('id').single()
-      error = insertError
-      if (!error && data) {
-        if (!silent) toast.success('Đã tạo bài viết')
-        navigate(`/admin/blog/${data.id}`, { replace: true })
+  const save = useCallback(
+    async (silent = false) => {
+      const current = formRef.current
+      if (!current.title.trim()) {
+        if (!silent) toast.error('Vui lòng nhập tiêu đề')
+        return false
       }
-    } else {
-      const { error: updateError } = await supabase.from('blog_posts').update(payload).eq('id', id!)
-      error = updateError
-      if (!error && !silent) toast.success('Đã lưu bài viết')
-    }
 
-    setSaving(false)
-    if (error) {
-      if (!silent) toast.error(error.message)
-      return false
-    }
-    return true
-  }
+      setSaving(true)
+      const payload = {
+        title: current.title,
+        slug: current.slug || slugify(current.title),
+        category: current.category,
+        thumbnail: current.thumbnail || null,
+        summary: current.summary,
+        content: current.content,
+        status: current.status,
+        tags: current.tags.split(',').map((t) => t.trim()).filter(Boolean),
+        author_id: user?.id ?? null,
+        published_at: current.status === 'published' ? new Date().toISOString() : null,
+      }
+
+      const currentId = postIdRef.current
+      let error
+
+      if (!currentId || currentId === 'new') {
+        const { data, error: insertError } = await supabase
+          .from('blog_posts')
+          .insert(payload)
+          .select('id')
+          .single()
+        error = insertError
+        if (!error && data) {
+          postIdRef.current = data.id
+          if (!silent) toast.success('Đã tạo bài viết')
+          navigate(`/admin/blog/${data.id}`, { replace: true })
+        }
+      } else {
+        const { error: updateError } = await supabase
+          .from('blog_posts')
+          .update(payload)
+          .eq('id', currentId)
+        error = updateError
+        if (!error && !silent) toast.success('Đã lưu bài viết')
+      }
+
+      setSaving(false)
+      if (error) {
+        if (!silent) toast.error(error.message)
+        return false
+      }
+
+      setLastSavedAt(new Date())
+      return true
+    },
+    [navigate, user?.id],
+  )
 
   useEffect(() => {
-    autoSaveRef.current = setInterval(() => {
-      if (form.title.trim()) save(true)
+    postIdRef.current = id
+  }, [id])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (formRef.current.title.trim()) {
+        save(true)
+      }
     }, 30000)
 
-    return () => {
-      if (autoSaveRef.current) clearInterval(autoSaveRef.current)
-    }
-  }, [form, id, isNew])
+    return () => clearInterval(interval)
+  }, [save])
+
+  const saveIndicator = saving
+    ? 'Đang lưu...'
+    : lastSavedAt
+      ? `Đã lưu lúc ${lastSavedAt.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`
+      : 'Auto-save mỗi 30 giây'
 
   if (loading) {
     return (
@@ -137,7 +168,7 @@ export function BlogEditorPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">{isNew ? 'Viết bài mới' : 'Chỉnh sửa bài viết'}</h1>
-          <p className="text-sm text-muted-foreground">Auto-save draft mỗi 30 giây</p>
+          <p className={`text-sm ${saving ? 'text-primary' : 'text-muted-foreground'}`}>{saveIndicator}</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => setPreviewOpen(true)}>
@@ -173,12 +204,10 @@ export function BlogEditorPage() {
           </div>
           <div className="space-y-2">
             <Label>Nội dung</Label>
-            <Textarea
-              value={form.content}
-              onChange={(e) => setForm({ ...form, content: e.target.value })}
-              rows={16}
-              className="font-mono text-sm"
-              placeholder="Viết nội dung bài viết..."
+            <RichTextEditor
+              key={id ?? 'new'}
+              content={form.content}
+              onChange={(html) => setForm((f) => ({ ...f, content: html }))}
             />
           </div>
         </div>
@@ -228,13 +257,13 @@ export function BlogEditorPage() {
           <DialogHeader>
             <DialogTitle>Preview</DialogTitle>
           </DialogHeader>
-          <article className="prose prose-invert max-w-none">
+          <article>
             {form.thumbnail && (
               <img src={form.thumbnail} alt="" className="mb-4 w-full rounded-lg object-cover max-h-64" />
             )}
             <h1 className="text-2xl font-bold mb-2">{form.title || 'Tiêu đề bài viết'}</h1>
             <p className="text-muted-foreground mb-4">{form.summary}</p>
-            <div className="whitespace-pre-wrap text-sm leading-relaxed">{form.content}</div>
+            <div className="blog-prose text-base" dangerouslySetInnerHTML={{ __html: form.content }} />
           </article>
         </DialogContent>
       </Dialog>
