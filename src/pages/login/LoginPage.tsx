@@ -33,24 +33,24 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
+    <div className="flex min-h-screen items-center justify-center bg-[#0F1F52] p-4">
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-1/4 -left-1/4 h-[500px] w-[500px] rounded-full bg-indigo-600/10 blur-3xl" />
-        <div className="absolute -bottom-1/4 -right-1/4 h-[500px] w-[500px] rounded-full bg-purple-600/10 blur-3xl" />
+        <div className="absolute -top-1/4 -left-1/4 h-[500px] w-[500px] rounded-full bg-[#F5F0E8]/5 blur-3xl" />
+        <div className="absolute -bottom-1/4 -right-1/4 h-[500px] w-[500px] rounded-full bg-[#E8C97A]/10 blur-3xl" />
       </div>
 
-      <Card className="relative w-full max-w-md border-border/50 bg-card/80 backdrop-blur-xl">
+      <Card className="relative w-full max-w-md border-[#F5F0E8]/10 bg-[#1B2B6B]">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-xl font-bold text-white">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#F5F0E8] to-[#E8C97A] text-xl font-bold text-[#1B2B6B]">
             N
           </div>
-          <CardTitle className="text-2xl">Noko Admin</CardTitle>
-          <CardDescription>Sign in with your @noko.com email</CardDescription>
+          <CardTitle className="text-2xl text-[#F5F0E8]">Noko Admin</CardTitle>
+          <CardDescription className="text-[#C4BAA8]">Sign in with your @noko.com email</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-[#F5F0E8]">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -61,7 +61,7 @@ export function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-[#F5F0E8]">Password</Label>
               <Input
                 id="password"
                 type="password"

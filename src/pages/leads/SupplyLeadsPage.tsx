@@ -18,7 +18,7 @@ const PAGE_SIZE = 20
 const statusVariant = (status: LeadStatus) => {
   if (status === 'new') return 'warning' as const
   if (status === 'contacted') return 'secondary' as const
-  return 'success' as const
+  return 'enrolled' as const
 }
 
 const posLabel = (pos: string) => {
@@ -181,7 +181,7 @@ export function SupplyLeadsPage() {
                 </thead>
                 <tbody>
                   {paginated.map((lead) => (
-                    <tr key={lead.id} className="cursor-pointer border-b border-border/50 hover:bg-muted/30" onClick={() => openDetail(lead)}>
+                    <tr key={lead.id} className="cursor-pointer" onClick={() => openDetail(lead)}>
                       <td className="py-3 pr-4 font-medium">{lead.restaurant_name}</td>
                       <td className="py-3 pr-4">{lead.name}</td>
                       <td className="py-3 pr-4">{lead.phone}</td>

@@ -11,19 +11,16 @@ interface StatCardProps {
   title: string
   value: number | string
   icon: React.ReactNode
-  gradient: string
 }
 
-function StatCard({ title, value, icon, gradient }: StatCardProps) {
+function StatCard({ title, value, icon }: StatCardProps) {
   return (
-    <Card>
+    <Card className="stat-card">
       <CardContent className="flex items-center gap-4 p-6">
-        <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${gradient}`}>
-          {icon}
-        </div>
+        <div className="stat-card-icon">{icon}</div>
         <div>
-          <p className="text-sm text-muted-foreground">{title}</p>
-          <p className="text-2xl font-bold">{value}</p>
+          <p className="stat-card-label">{title}</p>
+          <p className="stat-card-value">{value}</p>
         </div>
       </CardContent>
     </Card>
@@ -140,7 +137,7 @@ export function DashboardPage() {
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#F5F0E8] border-t-transparent" />
       </div>
     )
   }
@@ -148,72 +145,73 @@ export function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">Noko ecosystem overview</p>
+        <h1 className="text-2xl font-bold text-[#F5F0E8]">Dashboard</h1>
+        <p className="text-[#C4BAA8]">Noko ecosystem overview</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <StatCard title="Total Academy Leads" value={stats.academy} icon={<GraduationCap className="h-6 w-6 text-white" />} gradient="from-indigo-500 to-purple-600" />
-        <StatCard title="Total Supply Leads" value={stats.supply} icon={<Package className="h-6 w-6 text-white" />} gradient="from-purple-500 to-pink-600" />
-        <StatCard title="Active Courses" value={stats.courses} icon={<BookOpen className="h-6 w-6 text-white" />} gradient="from-violet-500 to-indigo-600" />
-        <StatCard title="Active Products" value={stats.products} icon={<ShoppingBag className="h-6 w-6 text-white" />} gradient="from-indigo-600 to-blue-600" />
-        <StatCard title="New Messages" value={stats.contactsNew} icon={<MessageSquare className="h-6 w-6 text-white" />} gradient="from-rose-500 to-red-600" />
+        <StatCard title="Total Academy Leads" value={stats.academy} icon={<GraduationCap className="h-6 w-6" />} />
+        <StatCard title="Total Supply Leads" value={stats.supply} icon={<Package className="h-6 w-6" />} />
+        <StatCard title="Active Courses" value={stats.courses} icon={<BookOpen className="h-6 w-6" />} />
+        <StatCard title="Active Products" value={stats.products} icon={<ShoppingBag className="h-6 w-6" />} />
+        <StatCard title="New Messages" value={stats.contactsNew} icon={<MessageSquare className="h-6 w-6" />} />
       </div>
 
-      <Card>
+      <Card className="border-[#F5F0E8]/10">
         <CardHeader>
-          <CardTitle>Leads — Last 30 Days</CardTitle>
+          <CardTitle className="text-[#F5F0E8]">Leads — Last 30 Days</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" />
-                <XAxis dataKey="date" tick={{ fill: '#94a3b8', fontSize: 12 }} interval="preserveStartEnd" />
-                <YAxis tick={{ fill: '#94a3b8', fontSize: 12 }} allowDecimals={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#F5F0E8" strokeOpacity={0.1} />
+                <XAxis dataKey="date" tick={{ fill: '#C4BAA8', fontSize: 12 }} interval="preserveStartEnd" />
+                <YAxis tick={{ fill: '#C4BAA8', fontSize: 12 }} allowDecimals={false} />
                 <Tooltip
-                  contentStyle={{ background: '#13131a', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8 }}
-                  labelStyle={{ color: '#f8f9fa' }}
+                  contentStyle={{ background: '#243580', border: '1px solid rgba(245,240,232,0.2)', borderRadius: 8 }}
+                  labelStyle={{ color: '#F5F0E8' }}
+                  itemStyle={{ color: '#C4BAA8' }}
                 />
-                <Legend />
-                <Line type="monotone" dataKey="academy" name="Academy" stroke="#6366f1" strokeWidth={2} dot={false} />
-                <Line type="monotone" dataKey="supply" name="Supply" stroke="#8b5cf6" strokeWidth={2} dot={false} />
+                <Legend wrapperStyle={{ color: '#C4BAA8' }} />
+                <Line type="monotone" dataKey="academy" name="Academy" stroke="#F5F0E8" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="supply" name="Supply" stroke="#E8C97A" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </CardContent>
       </Card>
 
-      <Card>
+      <Card className="border-[#F5F0E8]/10">
         <CardHeader>
-          <CardTitle>5 latest leads</CardTitle>
+          <CardTitle className="text-[#F5F0E8]">5 latest leads</CardTitle>
         </CardHeader>
         <CardContent className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border text-left text-muted-foreground">
-                <th className="pb-3 pr-4 font-medium">Type</th>
-                <th className="pb-3 pr-4 font-medium">Full Name</th>
-                <th className="pb-3 pr-4 font-medium">Email</th>
-                <th className="pb-3 pr-4 font-medium">Details</th>
-                <th className="pb-3 font-medium">Date</th>
+              <tr>
+                <th className="pb-3 pr-4">Type</th>
+                <th className="pb-3 pr-4">Full Name</th>
+                <th className="pb-3 pr-4">Email</th>
+                <th className="pb-3 pr-4">Details</th>
+                <th className="pb-3">Date</th>
               </tr>
             </thead>
             <tbody>
               {recentLeads.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-muted-foreground">No leads yet</td>
+                  <td colSpan={5} className="py-8 text-center text-[#C4BAA8]">No leads yet</td>
                 </tr>
               ) : (
                 recentLeads.map((lead) => (
-                  <tr key={`${lead.type}-${lead.id}`} className="border-b border-border/50">
+                  <tr key={`${lead.type}-${lead.id}`}>
                     <td className="py-3 pr-4">
-                      <Badge variant={lead.type === 'academy' ? 'default' : 'secondary'}>
+                      <Badge variant={lead.type === 'academy' ? 'success' : 'secondary'}>
                         {lead.type === 'academy' ? 'Academy' : 'Supply'}
                       </Badge>
                     </td>
                     <td className="py-3 pr-4">{lead.name}</td>
-                    <td className="py-3 pr-4 text-muted-foreground">{lead.email}</td>
+                    <td className="py-3 pr-4 text-[#C4BAA8]">{lead.email}</td>
                     <td className="py-3 pr-4">{lead.detail}</td>
                     <td className="py-3">{formatDateTime(lead.created_at)}</td>
                   </tr>

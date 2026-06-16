@@ -19,8 +19,8 @@ export function ToolbarButton({ onClick, active, disabled, title, children }: To
       className={cn(
         'rounded-lg px-3 py-1.5 text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed',
         active
-          ? 'bg-white/10 text-white'
-          : 'text-gray-400 hover:bg-white/5 hover:text-white',
+          ? 'bg-[#F5F0E8]/10 text-[#F5F0E8]'
+          : 'text-[#C4BAA8] hover:bg-[#F5F0E8]/5 hover:text-[#F5F0E8]',
       )}
     >
       {children}
@@ -29,5 +29,5 @@ export function ToolbarButton({ onClick, active, disabled, title, children }: To
 }
 
 export function ToolbarDivider() {
-  return <div className="mx-1 h-5 w-px shrink-0 bg-white/10" aria-hidden />
+  return <div className="mx-1 h-5 w-px shrink-0 bg-[#F5F0E8]/10" aria-hidden />
 }

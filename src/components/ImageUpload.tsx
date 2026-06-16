@@ -155,7 +155,7 @@ export function ImageUpload({ value, onChange, label = 'Thumbnail' }: ImageUploa
           onClick={() => setTab('url')}
           className={cn(
             'flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-            tab === 'url' ? 'bg-white/10 text-white' : 'text-gray-500 hover:text-gray-300',
+            tab === 'url' ? 'bg-[#F5F0E8]/10 text-[#F5F0E8]' : 'text-[#A89880] hover:text-[#C4BAA8]',
           )}
         >
           <Link2 className="h-4 w-4" />
@@ -166,7 +166,7 @@ export function ImageUpload({ value, onChange, label = 'Thumbnail' }: ImageUploa
           onClick={() => setTab('upload')}
           className={cn(
             'flex flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors',
-            tab === 'upload' ? 'bg-white/10 text-white' : 'text-gray-500 hover:text-gray-300',
+            tab === 'upload' ? 'bg-[#F5F0E8]/10 text-[#F5F0E8]' : 'text-[#A89880] hover:text-[#C4BAA8]',
           )}
         >
           <Upload className="h-4 w-4" />
@@ -203,8 +203,8 @@ export function ImageUpload({ value, onChange, label = 'Thumbnail' }: ImageUploa
             if (e.key === 'Enter' || e.key === ' ') fileInputRef.current?.click()
           }}
           className={cn(
-            'flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-white/10 bg-card/50 px-6 py-10 transition-colors',
-            dragOver && 'border-primary/50 bg-primary/5',
+            'flex cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed border-[#F5F0E8]/10 bg-[#1F3075] px-6 py-10 transition-colors',
+            dragOver && 'border-[#E8C97A]/50 bg-[#F5F0E8]/5',
             uploading && 'pointer-events-none opacity-60',
           )}
         >
@@ -215,7 +215,7 @@ export function ImageUpload({ value, onChange, label = 'Thumbnail' }: ImageUploa
             className="hidden"
             onChange={handleFileSelect}
           />
-          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-white/5">
+          <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-[#F5F0E8]/5">
             <ImageIcon className="h-6 w-6 text-muted-foreground" />
           </div>
           {uploading ? (
@@ -232,12 +232,12 @@ export function ImageUpload({ value, onChange, label = 'Thumbnail' }: ImageUploa
       {previewUrl && (
         <div className="space-y-2">
           {previewLoading && (
-            <div className="flex h-40 items-center justify-center rounded-xl border border-white/10 bg-card/50">
-              <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+            <div className="flex h-40 items-center justify-center rounded-xl border border-[#F5F0E8]/10 bg-[#1F3075]">
+              <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#F5F0E8] border-t-transparent" />
             </div>
           )}
           {previewValid && !previewLoading && (
-            <div className="overflow-hidden rounded-xl border border-white/10 bg-card/50">
+            <div className="overflow-hidden rounded-xl border border-[#F5F0E8]/10 bg-[#1F3075]">
               <img
                 src={previewUrl}
                 alt="Preview thumbnail"

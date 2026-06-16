@@ -18,7 +18,7 @@ const PAGE_SIZE = 20
 const statusVariant = (status: LeadStatus) => {
   if (status === 'new') return 'warning' as const
   if (status === 'contacted') return 'secondary' as const
-  return 'success' as const
+  return 'enrolled' as const
 }
 
 export function AcademyLeadsPage() {
@@ -160,7 +160,7 @@ export function AcademyLeadsPage() {
                   {paginated.map((lead) => (
                     <tr
                       key={lead.id}
-                      className="cursor-pointer border-b border-border/50 hover:bg-muted/30"
+                      className="cursor-pointer"
                       onClick={() => openDetail(lead)}
                     >
                       <td className="py-3 pr-4 font-medium">{lead.name}</td>

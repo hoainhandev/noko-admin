@@ -42,7 +42,7 @@ export function RichTextEditor({
       }),
       Link.configure({
         openOnClick: false,
-        HTMLAttributes: { class: 'text-primary underline' },
+        HTMLAttributes: { class: 'text-[#E8C97A] underline' },
       }),
       Image.configure({
         HTMLAttributes: { class: 'rounded-lg max-w-full my-4' },
@@ -83,8 +83,8 @@ export function RichTextEditor({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10 bg-card/50">
-      <div className="flex flex-wrap items-center gap-1 border-b border-white/10 bg-secondary px-3 py-2">
+    <div className="overflow-hidden rounded-xl border border-[#F5F0E8]/10 bg-[#1F3075]">
+      <div className="flex flex-wrap items-center gap-1 border-b border-[#F5F0E8]/10 bg-[#0F1F52] px-3 py-2">
         <ToolbarButton
           title="Heading 2"
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
@@ -160,7 +160,7 @@ export function RichTextEditor({
 
       <EditorContent editor={editor} />
 
-      <div className="border-t border-white/10 px-6 py-3 text-sm text-muted-foreground">
+      <div className="border-t border-[#F5F0E8]/10 px-6 py-3 text-sm text-[#C4BAA8]">
         {wordCount} words · About {readingMinutes} min read
       </div>
     </div>

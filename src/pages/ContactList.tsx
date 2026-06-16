@@ -29,7 +29,7 @@ interface ContactMessage {
 const PAGE_SIZE = 20
 
 const statusVariant = (status: ContactStatus) => {
-  if (status === 'new') return 'destructive' as const
+  if (status === 'new') return 'warning' as const
   if (status === 'read') return 'secondary' as const
   return 'success' as const
 }
@@ -215,7 +215,7 @@ export function ContactListPage() {
                     <tr
                       key={m.id}
                       onClick={() => openDetail(m)}
-                      className="cursor-pointer border-b border-border/50 hover:bg-muted/30"
+                      className="cursor-pointer"
                     >
                       <td className="py-3 pr-4 font-medium">{m.name}</td>
                       <td className="py-3 pr-4 text-muted-foreground">{m.email}</td>
