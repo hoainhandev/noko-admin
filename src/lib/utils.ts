@@ -19,7 +19,7 @@ export function slugify(text: string): string {
 
 export function formatDate(date: string | null | undefined): string {
   if (!date) return '—'
-  return new Date(date).toLocaleDateString('vi-VN', {
+  return new Date(date).toLocaleDateString('en-US', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
@@ -28,7 +28,7 @@ export function formatDate(date: string | null | undefined): string {
 
 export function formatDateTime(date: string | null | undefined): string {
   if (!date) return '—'
-  return new Date(date).toLocaleString('vi-VN', {
+  return new Date(date).toLocaleString('en-US', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',

@@ -98,11 +98,11 @@ export function ImageUpload({ value, onChange, label = 'Thumbnail' }: ImageUploa
   const uploadFile = useCallback(
     async (file: File) => {
       if (!ACCEPTED_TYPES.includes(file.type)) {
-        toast.error('Chỉ chấp nhận file JPG, PNG, WebP hoặc GIF')
+        toast.error('Only JPG, PNG, WebP, or GIF files are accepted')
         return
       }
       if (file.size > MAX_SIZE_MB * 1024 * 1024) {
-        toast.error(`Kích thước tối đa ${MAX_SIZE_MB}MB`)
+        toast.error(`Maximum size is ${MAX_SIZE_MB}MB`)
         return
       }
 
@@ -124,7 +124,7 @@ export function ImageUpload({ value, onChange, label = 'Thumbnail' }: ImageUploa
       const { data: publicData } = supabase.storage.from(BUCKET).getPublicUrl(data.path)
       onChange(publicData.publicUrl)
       setUploading(false)
-      toast.success('Upload ảnh thành công')
+      toast.success('Image uploaded successfully')
     },
     [onChange],
   )
@@ -159,7 +159,7 @@ export function ImageUpload({ value, onChange, label = 'Thumbnail' }: ImageUploa
           )}
         >
           <Link2 className="h-4 w-4" />
-          URL ảnh online
+          Online Image URL
         </button>
         <button
           type="button"
@@ -170,7 +170,7 @@ export function ImageUpload({ value, onChange, label = 'Thumbnail' }: ImageUploa
           )}
         >
           <Upload className="h-4 w-4" />
-          Upload ảnh
+          Upload Image
         </button>
       </div>
 
@@ -182,10 +182,10 @@ export function ImageUpload({ value, onChange, label = 'Thumbnail' }: ImageUploa
             placeholder="https://images.unsplash.com/..."
           />
           {urlChecking && urlInput.trim() && isValidHttpUrl(urlInput.trim()) && (
-            <p className="text-xs text-muted-foreground">Đang kiểm tra URL...</p>
+            <p className="text-xs text-muted-foreground">Validating URL...</p>
           )}
           {urlError && urlInput.trim() && (
-            <p className="text-xs text-destructive">URL ảnh không hợp lệ</p>
+            <p className="text-xs text-destructive">Invalid image URL</p>
           )}
         </div>
       ) : (
@@ -219,11 +219,11 @@ export function ImageUpload({ value, onChange, label = 'Thumbnail' }: ImageUploa
             <ImageIcon className="h-6 w-6 text-muted-foreground" />
           </div>
           {uploading ? (
-            <p className="text-sm text-muted-foreground">Đang upload...</p>
+            <p className="text-sm text-muted-foreground">Uploading...</p>
           ) : (
             <>
-              <p className="text-sm font-medium text-foreground">Kéo thả ảnh vào đây</p>
-              <p className="mt-1 text-xs text-muted-foreground">hoặc click để chọn file · JPG, PNG, WebP, GIF · tối đa {MAX_SIZE_MB}MB</p>
+              <p className="text-sm font-medium text-foreground">Drag and drop an image here</p>
+              <p className="mt-1 text-xs text-muted-foreground">or click to select a file · JPG, PNG, WebP, GIF · max {MAX_SIZE_MB}MB</p>
             </>
           )}
         </div>
@@ -246,7 +246,7 @@ export function ImageUpload({ value, onChange, label = 'Thumbnail' }: ImageUploa
             </div>
           )}
           {previewError && !previewLoading && (
-            <p className="text-xs text-destructive">URL ảnh không hợp lệ</p>
+            <p className="text-xs text-destructive">Invalid image URL</p>
           )}
         </div>
       )}

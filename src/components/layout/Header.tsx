@@ -9,9 +9,10 @@ const routeLabels: Record<string, string> = {
   academy: 'Academy',
   supply: 'Supply',
   blog: 'Blog',
-  new: 'Viết bài mới',
+  contacts: 'Contact Messages',
+  new: 'New Post',
   settings: 'Settings',
-  login: 'Đăng nhập',
+  login: 'Login',
 }
 
 export function Header() {
@@ -20,7 +21,7 @@ export function Header() {
 
   const segments = location.pathname.split('/').filter(Boolean)
   const crumbs = segments.map((seg, i) => ({
-    label: routeLabels[seg] ?? (seg.length > 20 ? 'Chi tiết' : seg),
+    label: routeLabels[seg] ?? (seg.length > 20 ? 'Details' : seg),
     href: '/' + segments.slice(0, i + 1).join('/'),
     isLast: i === segments.length - 1,
   }))

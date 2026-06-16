@@ -76,7 +76,7 @@ export function AcademyLeadsPage() {
     if (error) {
       toast.error(error.message)
     } else {
-      toast.success('Đã cập nhật trạng thái')
+      toast.success('Status updated')
       setSelected(null)
       fetchLeads()
     }
@@ -85,7 +85,7 @@ export function AcademyLeadsPage() {
   const exportCsv = () => {
     downloadCsv(
       'academy-leads.csv',
-      ['Họ tên', 'SĐT', 'Email', 'Khóa học', 'Ngày đăng ký', 'Trạng thái'],
+      ['Full Name', 'Phone', 'Email', 'Course', 'Registration Date', 'Status'],
       filtered.map((l) => [
         l.name,
         l.phone,
@@ -101,7 +101,7 @@ export function AcademyLeadsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Leads Academy</h1>
+          <h1 className="text-2xl font-bold">Academy Leads</h1>
           <p className="text-muted-foreground">{filtered.length} leads</p>
         </div>
         <Button variant="outline" onClick={exportCsv}>
@@ -115,24 +115,24 @@ export function AcademyLeadsPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input className="pl-9" placeholder="Tìm theo tên hoặc SĐT..." value={search} onChange={(e) => setSearch(e.target.value)} />
+              <Input className="pl-9" placeholder="Search by name or phone..." value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
             <Select value={courseFilter} onValueChange={setCourseFilter}>
-              <SelectTrigger className="w-full sm:w-56"><SelectValue placeholder="Khóa học" /></SelectTrigger>
+              <SelectTrigger className="w-full sm:w-56"><SelectValue placeholder="Course" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả khóa học</SelectItem>
+                <SelectItem value="all">All courses</SelectItem>
                 {ACADEMY_COURSES.map((c) => (
                   <SelectItem key={c} value={c}>{c}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder="Trạng thái" /></SelectTrigger>
+              <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder="Status" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả trạng thái</SelectItem>
-                <SelectItem value="new">Mới</SelectItem>
-                <SelectItem value="contacted">Đã liên hệ</SelectItem>
-                <SelectItem value="registered">Đã đăng ký</SelectItem>
+                <SelectItem value="all">All statuses</SelectItem>
+                <SelectItem value="new">New</SelectItem>
+                <SelectItem value="contacted">Contacted</SelectItem>
+                <SelectItem value="registered">Enrolled</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -147,13 +147,13 @@ export function AcademyLeadsPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border text-left text-muted-foreground">
-                    <th className="pb-3 pr-4 font-medium">Họ tên</th>
-                    <th className="pb-3 pr-4 font-medium">SĐT</th>
+                    <th className="pb-3 pr-4 font-medium">Full Name</th>
+                    <th className="pb-3 pr-4 font-medium">Phone</th>
                     <th className="pb-3 pr-4 font-medium">Email</th>
-                    <th className="pb-3 pr-4 font-medium">Khóa học</th>
-                    <th className="pb-3 pr-4 font-medium">Ngày đăng ký</th>
-                    <th className="pb-3 pr-4 font-medium">Trạng thái</th>
-                    <th className="pb-3 font-medium">Hành động</th>
+                    <th className="pb-3 pr-4 font-medium">Course</th>
+                    <th className="pb-3 pr-4 font-medium">Registration Date</th>
+                    <th className="pb-3 pr-4 font-medium">Status</th>
+                    <th className="pb-3 font-medium">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -175,7 +175,7 @@ export function AcademyLeadsPage() {
                       </td>
                       <td className="py-3">
                         <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); openDetail(lead) }}>
-                          Chi tiết
+                          View Details
                         </Button>
                       </td>
                     </tr>
@@ -191,30 +191,30 @@ export function AcademyLeadsPage() {
       <Dialog open={!!selected} onOpenChange={() => setSelected(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Chi tiết lead Academy</DialogTitle>
+            <DialogTitle>Academy Lead Details</DialogTitle>
           </DialogHeader>
           {selected && (
             <div className="space-y-4">
               <div className="grid gap-2 text-sm">
-                <p><span className="text-muted-foreground">Họ tên:</span> {selected.name}</p>
-                <p><span className="text-muted-foreground">SĐT:</span> {selected.phone}</p>
+                <p><span className="text-muted-foreground">Full Name:</span> {selected.name}</p>
+                <p><span className="text-muted-foreground">Phone:</span> {selected.phone}</p>
                 <p><span className="text-muted-foreground">Email:</span> {selected.email}</p>
-                <p><span className="text-muted-foreground">Khóa học:</span> {selected.course ?? '—'}</p>
-                <p><span className="text-muted-foreground">Ngày:</span> {formatDateTime(selected.created_at)}</p>
+                <p><span className="text-muted-foreground">Course:</span> {selected.course ?? '—'}</p>
+                <p><span className="text-muted-foreground">Date:</span> {formatDateTime(selected.created_at)}</p>
               </div>
               <div className="space-y-2">
-                <Label>Trạng thái</Label>
+                <Label>Status</Label>
                 <Select value={editStatus} onValueChange={(v) => setEditStatus(v as LeadStatus)}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="new">Mới</SelectItem>
-                    <SelectItem value="contacted">Đã liên hệ</SelectItem>
-                    <SelectItem value="registered">Đã đăng ký</SelectItem>
+                    <SelectItem value="new">New</SelectItem>
+                    <SelectItem value="contacted">Contacted</SelectItem>
+                    <SelectItem value="registered">Enrolled</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <Button className="w-full" onClick={saveStatus} disabled={saving}>
-                {saving ? 'Đang lưu...' : 'Lưu trạng thái'}
+                {saving ? 'Saving...' : 'Save Status'}
               </Button>
             </div>
           )}

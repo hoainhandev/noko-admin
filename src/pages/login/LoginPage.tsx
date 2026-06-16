@@ -28,7 +28,7 @@ export function LoginPage() {
     if (error) {
       toast.error(error)
     } else {
-      toast.success('Đăng nhập thành công')
+      toast.success('Signed in successfully')
     }
   }
 
@@ -45,7 +45,7 @@ export function LoginPage() {
             N
           </div>
           <CardTitle className="text-2xl">Noko Admin</CardTitle>
-          <CardDescription>Đăng nhập bằng email @noko.com</CardDescription>
+          <CardDescription>Sign in with your @noko.com email</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -61,7 +61,7 @@ export function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Mật khẩu</Label>
+              <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -71,7 +71,7 @@ export function LoginPage() {
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+              {loading ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
         </CardContent>

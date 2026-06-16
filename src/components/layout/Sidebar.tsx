@@ -24,13 +24,13 @@ const navItems = [
     label: 'Leads',
     icon: Users,
     children: [
-      { label: 'Tất cả', href: '/admin/leads' },
+      { label: 'All', href: '/admin/leads' },
       { label: 'Academy', href: '/admin/leads/academy' },
       { label: 'Supply', href: '/admin/leads/supply' },
     ],
   },
-  { label: 'Academy', href: '/admin/academy', icon: GraduationCap },
-  { label: 'Supply', href: '/admin/supply', icon: Package },
+  { label: 'Courses', href: '/admin/academy', icon: GraduationCap },
+  { label: 'Products', href: '/admin/supply', icon: Package },
   { label: 'Blog', href: '/admin/blog', icon: FileText },
 ]
 
@@ -124,7 +124,7 @@ export function Sidebar() {
           )}
         >
           <MessageSquare className="h-4 w-4 shrink-0" />
-          <span className="flex-1">Liên hệ</span>
+          <span className="flex-1">Contact Messages</span>
           {unreadCount > 0 && (
             <span className="rounded-full bg-red-500 px-2 py-0.5 text-xs font-semibold text-white">
               {unreadCount}

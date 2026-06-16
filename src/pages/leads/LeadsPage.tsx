@@ -65,7 +65,7 @@ export function LeadsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Tất cả Leads</h1>
+        <h1 className="text-2xl font-bold">All Leads</h1>
         <p className="text-muted-foreground">
           Academy + Supply ·{' '}
           <Link to="/admin/leads/academy" className="text-primary hover:underline">Academy</Link>
@@ -81,14 +81,14 @@ export function LeadsPage() {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <Tabs value={typeFilter} onValueChange={setTypeFilter}>
                 <TabsList>
-                  <TabsTrigger value="all">Tất cả</TabsTrigger>
+                  <TabsTrigger value="all">All</TabsTrigger>
                   <TabsTrigger value="academy">Academy</TabsTrigger>
                   <TabsTrigger value="supply">Supply</TabsTrigger>
                 </TabsList>
               </Tabs>
               <div className="relative w-full sm:w-64">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input className="pl-9" placeholder="Tìm kiếm..." value={search} onChange={(e) => setSearch(e.target.value)} />
+                <Input className="pl-9" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
               </div>
             </div>
           </div>
@@ -102,13 +102,13 @@ export function LeadsPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border text-left text-muted-foreground">
-                  <th className="pb-3 pr-4 font-medium">Loại</th>
-                  <th className="pb-3 pr-4 font-medium">Tên</th>
-                  <th className="pb-3 pr-4 font-medium">SĐT</th>
+                  <th className="pb-3 pr-4 font-medium">Type</th>
+                  <th className="pb-3 pr-4 font-medium">Full Name</th>
+                  <th className="pb-3 pr-4 font-medium">Phone</th>
                   <th className="pb-3 pr-4 font-medium">Email</th>
-                  <th className="pb-3 pr-4 font-medium">Chi tiết</th>
-                  <th className="pb-3 pr-4 font-medium">Ngày</th>
-                  <th className="pb-3 font-medium">Trạng thái</th>
+                  <th className="pb-3 pr-4 font-medium">Details</th>
+                  <th className="pb-3 pr-4 font-medium">Date</th>
+                  <th className="pb-3 font-medium">Status</th>
                 </tr>
               </thead>
               <tbody>

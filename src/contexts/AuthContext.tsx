@@ -42,7 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signIn = async (email: string, password: string) => {
     if (!isNokoEmail(email)) {
-      return { error: 'Chỉ email @noko.com được phép đăng nhập.' }
+      return { error: 'Only @noko.com email addresses are allowed to sign in.' }
     }
 
     const { error } = await supabase.auth.signInWithPassword({ email, password })

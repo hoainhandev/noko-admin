@@ -33,7 +33,7 @@ function getReadingMinutes(wordCount: number): number {
 export function RichTextEditor({
   content,
   onChange,
-  placeholder = 'Bắt đầu viết nội dung bài viết...',
+  placeholder = 'Start writing your post content...',
 }: RichTextEditorProps) {
   const editor = useEditor({
     extensions: [
@@ -68,7 +68,7 @@ export function RichTextEditor({
 
   const setLink = () => {
     const previousUrl = editor.getAttributes('link').href as string | undefined
-    const url = window.prompt('Nhập URL:', previousUrl ?? 'https://')
+    const url = window.prompt('Enter URL:', previousUrl ?? 'https://')
     if (url === null) return
     if (url === '') {
       editor.chain().focus().extendMarkRange('link').unsetLink().run()
@@ -78,7 +78,7 @@ export function RichTextEditor({
   }
 
   const setImage = () => {
-    const url = window.prompt('Nhập Image URL:')
+    const url = window.prompt('Enter image URL:')
     if (url) editor.chain().focus().setImage({ src: url }).run()
   }
 
@@ -161,7 +161,7 @@ export function RichTextEditor({
       <EditorContent editor={editor} />
 
       <div className="border-t border-white/10 px-6 py-3 text-sm text-muted-foreground">
-        {wordCount} từ · Đọc khoảng {readingMinutes} phút
+        {wordCount} words · About {readingMinutes} min read
       </div>
     </div>
   )

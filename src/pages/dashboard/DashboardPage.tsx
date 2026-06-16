@@ -149,20 +149,20 @@ export function DashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">Tổng quan hệ sinh thái Noko</p>
+        <p className="text-muted-foreground">Noko ecosystem overview</p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
-        <StatCard title="Leads Academy" value={stats.academy} icon={<GraduationCap className="h-6 w-6 text-white" />} gradient="from-indigo-500 to-purple-600" />
-        <StatCard title="Leads Supply" value={stats.supply} icon={<Package className="h-6 w-6 text-white" />} gradient="from-purple-500 to-pink-600" />
-        <StatCard title="Khóa học active" value={stats.courses} icon={<BookOpen className="h-6 w-6 text-white" />} gradient="from-violet-500 to-indigo-600" />
-        <StatCard title="Sản phẩm active" value={stats.products} icon={<ShoppingBag className="h-6 w-6 text-white" />} gradient="from-indigo-600 to-blue-600" />
-        <StatCard title="Tin nhắn mới" value={stats.contactsNew} icon={<MessageSquare className="h-6 w-6 text-white" />} gradient="from-rose-500 to-red-600" />
+        <StatCard title="Total Academy Leads" value={stats.academy} icon={<GraduationCap className="h-6 w-6 text-white" />} gradient="from-indigo-500 to-purple-600" />
+        <StatCard title="Total Supply Leads" value={stats.supply} icon={<Package className="h-6 w-6 text-white" />} gradient="from-purple-500 to-pink-600" />
+        <StatCard title="Active Courses" value={stats.courses} icon={<BookOpen className="h-6 w-6 text-white" />} gradient="from-violet-500 to-indigo-600" />
+        <StatCard title="Active Products" value={stats.products} icon={<ShoppingBag className="h-6 w-6 text-white" />} gradient="from-indigo-600 to-blue-600" />
+        <StatCard title="New Messages" value={stats.contactsNew} icon={<MessageSquare className="h-6 w-6 text-white" />} gradient="from-rose-500 to-red-600" />
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Leads 30 ngày gần nhất</CardTitle>
+          <CardTitle>Leads — Last 30 Days</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="h-72">
@@ -186,23 +186,23 @@ export function DashboardPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>5 leads mới nhất</CardTitle>
+          <CardTitle>5 latest leads</CardTitle>
         </CardHeader>
         <CardContent className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border text-left text-muted-foreground">
-                <th className="pb-3 pr-4 font-medium">Loại</th>
-                <th className="pb-3 pr-4 font-medium">Họ tên</th>
+                <th className="pb-3 pr-4 font-medium">Type</th>
+                <th className="pb-3 pr-4 font-medium">Full Name</th>
                 <th className="pb-3 pr-4 font-medium">Email</th>
-                <th className="pb-3 pr-4 font-medium">Chi tiết</th>
-                <th className="pb-3 font-medium">Ngày</th>
+                <th className="pb-3 pr-4 font-medium">Details</th>
+                <th className="pb-3 font-medium">Date</th>
               </tr>
             </thead>
             <tbody>
               {recentLeads.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="py-8 text-center text-muted-foreground">Chưa có leads</td>
+                  <td colSpan={5} className="py-8 text-center text-muted-foreground">No leads yet</td>
                 </tr>
               ) : (
                 recentLeads.map((lead) => (

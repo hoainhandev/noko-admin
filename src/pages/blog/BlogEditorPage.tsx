@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { RichTextEditor } from '@/components/editor/RichTextEditor'
 import { ImageUpload } from '@/components/ImageUpload'
 
-const BLOG_CATEGORIES = ['Tin tức', 'Hướng dẫn', 'Case study', 'Sản phẩm', 'Academy']
+const BLOG_CATEGORIES = ['News', 'Guides', 'Case study', 'Products', 'Academy']
 
 export function BlogEditorPage() {
   const { id } = useParams()
@@ -34,7 +34,7 @@ export function BlogEditorPage() {
   const [form, setForm] = useState({
     title: '',
     slug: '',
-    category: 'Tin tức',
+    category: 'News',
     thumbnail: '',
     summary: '',
     content: '',
@@ -82,7 +82,7 @@ export function BlogEditorPage() {
     async (silent = false) => {
       const current = formRef.current
       if (!current.title.trim()) {
-        if (!silent) toast.error('Vui lòng nhập tiêu đề')
+        if (!silent) toast.error('Please enter a title')
         return false
       }
 
@@ -112,7 +112,7 @@ export function BlogEditorPage() {
         error = insertError
         if (!error && data) {
           postIdRef.current = data.id
-          if (!silent) toast.success('Đã tạo bài viết')
+          if (!silent) toast.success('Post created')
           navigate(`/admin/blog/${data.id}`, { replace: true })
         }
       } else {
@@ -121,7 +121,7 @@ export function BlogEditorPage() {
           .update(payload)
           .eq('id', currentId)
         error = updateError
-        if (!error && !silent) toast.success('Đã lưu bài viết')
+        if (!error && !silent) toast.success('Post saved')
       }
 
       setSaving(false)
@@ -151,10 +151,10 @@ export function BlogEditorPage() {
   }, [save])
 
   const saveIndicator = saving
-    ? 'Đang lưu...'
+    ? 'Saving...'
     : lastSavedAt
-      ? `Đã lưu lúc ${lastSavedAt.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`
-      : 'Auto-save mỗi 30 giây'
+      ? `Saved at ${lastSavedAt.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`
+      : 'Auto-save every 30 seconds'
 
   if (loading) {
     return (
@@ -168,7 +168,7 @@ export function BlogEditorPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{isNew ? 'Viết bài mới' : 'Chỉnh sửa bài viết'}</h1>
+          <h1 className="text-2xl font-bold">{isNew ? 'New Post' : 'Edit Post'}</h1>
           <p className={`text-sm ${saving ? 'text-primary' : 'text-muted-foreground'}`}>{saveIndicator}</p>
         </div>
         <div className="flex gap-2">
@@ -178,7 +178,7 @@ export function BlogEditorPage() {
           </Button>
           <Button onClick={() => save()} disabled={saving}>
             <Save className="h-4 w-4" />
-            {saving ? 'Đang lưu...' : 'Lưu'}
+            {saving ? 'Saving...' : 'Save'}
           </Button>
         </div>
       </div>
@@ -186,7 +186,7 @@ export function BlogEditorPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-4">
           <div className="space-y-2">
-            <Label>Tiêu đề</Label>
+            <Label>Title</Label>
             <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
           </div>
           <div className="space-y-2">
@@ -200,11 +200,11 @@ export function BlogEditorPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label>Tóm tắt</Label>
+            <Label>Summary</Label>
             <Textarea value={form.summary} onChange={(e) => setForm({ ...form, summary: e.target.value })} rows={3} />
           </div>
           <div className="space-y-2">
-            <Label>Nội dung</Label>
+            <Label>Content</Label>
             <RichTextEditor
               key={id ?? 'new'}
               content={form.content}
@@ -216,11 +216,11 @@ export function BlogEditorPage() {
         <div className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle className="text-base">Cài đặt</CardTitle>
+              <CardTitle className="text-base">Settings</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
-                <Label>Danh mục</Label>
+                <Label>Category</Label>
                 <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -236,7 +236,7 @@ export function BlogEditorPage() {
                 onChange={(url) => setForm({ ...form, thumbnail: url })}
               />
               <div className="space-y-2">
-                <Label>Trạng thái</Label>
+                <Label>Status</Label>
                 <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v as BlogStatus })}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
@@ -246,7 +246,7 @@ export function BlogEditorPage() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Tags (phân cách bằng dấu phẩy)</Label>
+                <Label>Tags (comma-separated)</Label>
                 <Input value={form.tags} onChange={(e) => setForm({ ...form, tags: e.target.value })} placeholder="noko, supply, academy" />
               </div>
             </CardContent>
@@ -263,7 +263,7 @@ export function BlogEditorPage() {
             {form.thumbnail && (
               <img src={form.thumbnail} alt="" className="mb-4 w-full rounded-lg object-cover max-h-64" />
             )}
-            <h1 className="text-2xl font-bold mb-2">{form.title || 'Tiêu đề bài viết'}</h1>
+            <h1 className="text-2xl font-bold mb-2">{form.title || 'Post title'}</h1>
             <p className="text-muted-foreground mb-4">{form.summary}</p>
             <div className="blog-prose text-base" dangerouslySetInnerHTML={{ __html: form.content }} />
           </article>

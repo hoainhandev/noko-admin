@@ -3,6 +3,7 @@ import { Download, Mail, Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
 import { downloadCsv, formatDateTime } from '@/lib/utils'
+import { CONTACT_STATUS_LABELS, type ContactStatus } from '@/types/database'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -11,8 +12,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Pagination } from '@/components/Pagination'
-
-type ContactStatus = 'new' | 'read' | 'replied'
 
 interface ContactMessage {
   id: string
@@ -29,12 +28,6 @@ interface ContactMessage {
 
 const PAGE_SIZE = 20
 
-const statusLabel: Record<ContactStatus, string> = {
-  new: 'Mới',
-  read: 'Đã đọc',
-  replied: 'Đã phản hồi',
-}
-
 const statusVariant = (status: ContactStatus) => {
   if (status === 'new') return 'destructive' as const
   if (status === 'read') return 'secondary' as const
@@ -42,7 +35,7 @@ const statusVariant = (status: ContactStatus) => {
 }
 
 function getService(msg: ContactMessage): string {
-  return msg.service_interest ?? msg.interested_in ?? msg.service ?? 'Khác'
+  return msg.service_interest ?? msg.interested_in ?? msg.service ?? 'Other'
 }
 
 export function ContactListPage() {
@@ -124,7 +117,7 @@ export function ContactListPage() {
       toast.error(error.message)
       return
     }
-    toast.success('Đã cập nhật trạng thái')
+    toast.success('Status updated')
     setSelected(null)
     fetchMessages()
   }
@@ -132,7 +125,7 @@ export function ContactListPage() {
   const exportCsv = () => {
     downloadCsv(
       'contact-messages.csv',
-      ['Họ tên', 'Email', 'SĐT', 'Quan tâm đến', 'Tin nhắn', 'Ngày gửi', 'Trạng thái'],
+      ['Full Name', 'Email', 'Phone', 'Interested In', 'Message', 'Submitted', 'Status'],
       filtered.map((m) => [
         m.name ?? '',
         m.email ?? '',
@@ -140,7 +133,7 @@ export function ContactListPage() {
         getService(m),
         m.message ?? '',
         formatDateTime(m.created_at),
-        statusLabel[m.status],
+        CONTACT_STATUS_LABELS[m.status],
       ]),
     )
   }
@@ -150,7 +143,7 @@ export function ContactListPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">Contact Messages</h1>
-          <p className="text-muted-foreground">{filtered.length} tin nhắn</p>
+          <p className="text-muted-foreground">{filtered.length} messages</p>
         </div>
         <Button variant="outline" onClick={exportCsv}>
           <Download className="h-4 w-4" />
@@ -160,34 +153,34 @@ export function ContactListPage() {
 
       <Card>
         <CardHeader className="space-y-3">
-          <CardTitle>Danh sách liên hệ</CardTitle>
+          <CardTitle>Contact list</CardTitle>
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 className="pl-9"
-                placeholder="Tìm theo tên hoặc email..."
+                placeholder="Search by name or email..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
             <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as 'all' | ContactStatus)}>
               <SelectTrigger className="w-full sm:w-40">
-                <SelectValue placeholder="Trạng thái" />
+                <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
-                <SelectItem value="new">Mới</SelectItem>
-                <SelectItem value="read">Đã đọc</SelectItem>
-                <SelectItem value="replied">Đã phản hồi</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="new">New</SelectItem>
+                <SelectItem value="read">Read</SelectItem>
+                <SelectItem value="replied">Replied</SelectItem>
               </SelectContent>
             </Select>
             <Select value={serviceFilter} onValueChange={setServiceFilter}>
               <SelectTrigger className="w-full sm:w-52">
-                <SelectValue placeholder="Dịch vụ" />
+                <SelectValue placeholder="Service" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả dịch vụ</SelectItem>
+                <SelectItem value="all">All services</SelectItem>
                 {serviceOptions.map((s) => (
                   <SelectItem key={s} value={s}>
                     {s}
@@ -207,14 +200,14 @@ export function ContactListPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border text-left text-muted-foreground">
-                    <th className="pb-3 pr-4 font-medium">Họ tên</th>
+                    <th className="pb-3 pr-4 font-medium">Full Name</th>
                     <th className="pb-3 pr-4 font-medium">Email</th>
-                    <th className="pb-3 pr-4 font-medium">SĐT</th>
-                    <th className="pb-3 pr-4 font-medium">Quan tâm đến</th>
-                    <th className="pb-3 pr-4 font-medium">Tin nhắn</th>
-                    <th className="pb-3 pr-4 font-medium">Ngày gửi</th>
-                    <th className="pb-3 pr-4 font-medium">Trạng thái</th>
-                    <th className="pb-3 font-medium">Hành động</th>
+                    <th className="pb-3 pr-4 font-medium">Phone</th>
+                    <th className="pb-3 pr-4 font-medium">Interested In</th>
+                    <th className="pb-3 pr-4 font-medium">Message</th>
+                    <th className="pb-3 pr-4 font-medium">Submitted</th>
+                    <th className="pb-3 pr-4 font-medium">Status</th>
+                    <th className="pb-3 font-medium">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -231,18 +224,18 @@ export function ContactListPage() {
                       <td className="py-3 pr-4 max-w-[280px] truncate">{m.message}</td>
                       <td className="py-3 pr-4">{formatDateTime(m.created_at)}</td>
                       <td className="py-3 pr-4">
-                        <Badge variant={statusVariant(m.status)}>{statusLabel[m.status]}</Badge>
+                        <Badge variant={statusVariant(m.status)}>{CONTACT_STATUS_LABELS[m.status]}</Badge>
                       </td>
                       <td className="py-3">
                         <Button
-                          size="sm"
                           variant="ghost"
+                          size="sm"
                           onClick={(e) => {
                             e.stopPropagation()
                             openDetail(m)
                           }}
                         >
-                          Xem
+                          View Details
                         </Button>
                       </td>
                     </tr>
@@ -258,47 +251,47 @@ export function ContactListPage() {
       <Dialog open={!!selected} onOpenChange={() => setSelected(null)}>
         <DialogContent className="max-w-xl">
           <DialogHeader>
-            <DialogTitle>Chi tiết liên hệ</DialogTitle>
+            <DialogTitle>Contact Details</DialogTitle>
           </DialogHeader>
           {selected && (
             <div className="space-y-4">
               <div className="grid gap-2 text-sm">
-                <p><span className="text-muted-foreground">Họ tên:</span> {selected.name}</p>
+                <p><span className="text-muted-foreground">Full Name:</span> {selected.name}</p>
                 <p><span className="text-muted-foreground">Email:</span> {selected.email}</p>
-                <p><span className="text-muted-foreground">SĐT:</span> {selected.phone ?? '—'}</p>
-                <p><span className="text-muted-foreground">Quan tâm đến:</span> {getService(selected)}</p>
-                <p><span className="text-muted-foreground">Ngày gửi:</span> {formatDateTime(selected.created_at)}</p>
+                <p><span className="text-muted-foreground">Phone:</span> {selected.phone ?? '—'}</p>
+                <p><span className="text-muted-foreground">Interested In:</span> {getService(selected)}</p>
+                <p><span className="text-muted-foreground">Submitted:</span> {formatDateTime(selected.created_at)}</p>
               </div>
 
               <div className="space-y-2">
-                <Label>Nội dung tin nhắn</Label>
+                <Label>Message</Label>
                 <div className="rounded-lg border border-border bg-secondary/40 p-3 text-sm leading-relaxed">
                   {selected.message || '—'}
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label>Trạng thái</Label>
+                <Label>Status</Label>
                 <Select value={editStatus} onValueChange={(v) => setEditStatus(v as ContactStatus)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="new">Mới</SelectItem>
-                    <SelectItem value="read">Đã đọc</SelectItem>
-                    <SelectItem value="replied">Đã phản hồi</SelectItem>
+                    <SelectItem value="new">New</SelectItem>
+                    <SelectItem value="read">Read</SelectItem>
+                    <SelectItem value="replied">Replied</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="flex flex-col gap-2 sm:flex-row">
                 <Button onClick={updateStatus} disabled={savingStatus}>
-                  {savingStatus ? 'Đang lưu...' : 'Lưu trạng thái'}
+                  {savingStatus ? 'Saving...' : 'Save Status'}
                 </Button>
                 <Button variant="outline" asChild>
                   <a href={`mailto:${selected.email}`}>
                     <Mail className="h-4 w-4" />
-                    Gửi email phản hồi
+                    Send Reply Email
                   </a>
                 </Button>
               </div>

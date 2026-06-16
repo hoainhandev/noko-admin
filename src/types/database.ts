@@ -110,9 +110,17 @@ export interface Database {
 }
 
 export const LEAD_STATUS_LABELS: Record<LeadStatus, string> = {
-  new: 'Mới',
-  contacted: 'Đã liên hệ',
-  registered: 'Đã đăng ký',
+  new: 'New',
+  contacted: 'Contacted',
+  registered: 'Enrolled',
+}
+
+export type ContactStatus = 'new' | 'read' | 'replied'
+
+export const CONTACT_STATUS_LABELS: Record<ContactStatus, string> = {
+  new: 'New',
+  read: 'Read',
+  replied: 'Replied',
 }
 
 export const ACADEMY_COURSES = [
@@ -122,8 +130,8 @@ export const ACADEMY_COURSES = [
   'Khóa 4 — Đào tạo nhân viên',
 ] as const
 
-export const PRODUCT_CATEGORIES: (ProductCategory | 'Tất cả')[] = [
-  'Tất cả',
+export const PRODUCT_CATEGORIES: (ProductCategory | 'All')[] = [
+  'All',
   'Rau củ',
   'Thịt & Hải sản',
   'Gia vị',

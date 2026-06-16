@@ -39,19 +39,19 @@ export function BlogListPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">Blog</h1>
-          <p className="text-muted-foreground">{filtered.length} bài viết</p>
+          <p className="text-muted-foreground">{filtered.length} posts</p>
         </div>
         <Button asChild>
           <Link to="/admin/blog/new">
             <Plus className="h-4 w-4" />
-            Viết bài mới
+            New Post
           </Link>
         </Button>
       </div>
 
       <Tabs value={statusFilter} onValueChange={setStatusFilter}>
         <TabsList>
-          <TabsTrigger value="all">Tất cả</TabsTrigger>
+          <TabsTrigger value="all">All</TabsTrigger>
           <TabsTrigger value="published">Published</TabsTrigger>
           <TabsTrigger value="draft">Draft</TabsTrigger>
         </TabsList>
@@ -68,17 +68,17 @@ export function BlogListPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border text-left text-muted-foreground">
-                  <th className="pb-3 pr-4 font-medium">Tiêu đề</th>
-                  <th className="pb-3 pr-4 font-medium">Danh mục</th>
-                  <th className="pb-3 pr-4 font-medium">Ngày</th>
-                  <th className="pb-3 pr-4 font-medium">Trạng thái</th>
-                  <th className="pb-3 font-medium">Hành động</th>
+                  <th className="pb-3 pr-4 font-medium">Title</th>
+                  <th className="pb-3 pr-4 font-medium">Category</th>
+                  <th className="pb-3 pr-4 font-medium">Date</th>
+                  <th className="pb-3 pr-4 font-medium">Status</th>
+                  <th className="pb-3 font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="py-8 text-center text-muted-foreground">Chưa có bài viết</td>
+                    <td colSpan={5} className="py-8 text-center text-muted-foreground">No posts yet</td>
                   </tr>
                 ) : (
                   filtered.map((post) => (

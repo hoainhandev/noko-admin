@@ -24,7 +24,7 @@ const emptyForm = {
 export function SupplyPage() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
-  const [category, setCategory] = useState<string>('Tất cả')
+  const [category, setCategory] = useState<string>('All')
   const [modalOpen, setModalOpen] = useState(false)
   const [editing, setEditing] = useState<Product | null>(null)
   const [form, setForm] = useState(emptyForm)
@@ -43,7 +43,7 @@ export function SupplyPage() {
   }, [])
 
   const filtered = useMemo(() => {
-    if (category === 'Tất cả') return products
+    if (category === 'All') return products
     return products.filter((p) => p.category === category)
   }, [products, category])
 
@@ -67,7 +67,7 @@ export function SupplyPage() {
 
   const saveProduct = async () => {
     if (!form.name.trim()) {
-      toast.error('Vui lòng nhập tên sản phẩm')
+      toast.error('Please enter a product name')
       return
     }
     setSaving(true)
@@ -86,18 +86,18 @@ export function SupplyPage() {
     setSaving(false)
     if (error) toast.error(error.message)
     else {
-      toast.success(editing ? 'Đã cập nhật sản phẩm' : 'Đã thêm sản phẩm')
+      toast.success(editing ? 'Product updated' : 'Product added')
       setModalOpen(false)
       fetchProducts()
     }
   }
 
   const deleteProduct = async (product: Product) => {
-    if (!confirm(`Xóa sản phẩm "${product.name}"?`)) return
+    if (!confirm(`Delete product "${product.name}"?`)) return
     const { error } = await supabase.from('products').delete().eq('id', product.id)
     if (error) toast.error(error.message)
     else {
-      toast.success('Đã xóa sản phẩm')
+      toast.success('Product deleted')
       fetchProducts()
     }
   }
@@ -106,12 +106,12 @@ export function SupplyPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Quản lý sản phẩm Supply</h1>
-          <p className="text-muted-foreground">{filtered.length} sản phẩm</p>
+          <h1 className="text-2xl font-bold">Supply Product Management</h1>
+          <p className="text-muted-foreground">{filtered.length} products</p>
         </div>
         <Button onClick={openCreate}>
           <Plus className="h-4 w-4" />
-          Thêm sản phẩm
+          Add Product
         </Button>
       </div>
 
@@ -134,12 +134,12 @@ export function SupplyPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border text-left text-muted-foreground">
-                  <th className="pb-3 pr-4 font-medium">Tên</th>
-                  <th className="pb-3 pr-4 font-medium">Danh mục</th>
-                  <th className="pb-3 pr-4 font-medium">Đơn vị</th>
+                  <th className="pb-3 pr-4 font-medium">Product Name</th>
+                  <th className="pb-3 pr-4 font-medium">Category</th>
+                  <th className="pb-3 pr-4 font-medium">Unit</th>
                   <th className="pb-3 pr-4 font-medium">Badge</th>
-                  <th className="pb-3 pr-4 font-medium">Trạng thái</th>
-                  <th className="pb-3 font-medium">Hành động</th>
+                  <th className="pb-3 pr-4 font-medium">Status</th>
+                  <th className="pb-3 font-medium">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -177,38 +177,38 @@ export function SupplyPage() {
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{editing ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới'}</DialogTitle>
+            <DialogTitle>{editing ? 'Edit Product' : 'Add Product'}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Tên sản phẩm</Label>
+              <Label>Product Name</Label>
               <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             </div>
             <div className="space-y-2">
-              <Label>Danh mục</Label>
+              <Label>Category</Label>
               <Select value={form.category} onValueChange={(v) => setForm({ ...form, category: v as ProductCategory })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  {PRODUCT_CATEGORIES.filter((c) => c !== 'Tất cả').map((c) => (
+                  {PRODUCT_CATEGORIES.filter((c) => c !== 'All').map((c) => (
                     <SelectItem key={c} value={c}>{c}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label>Đơn vị</Label>
+              <Label>Unit</Label>
               <Input value={form.unit} onChange={(e) => setForm({ ...form, unit: e.target.value })} />
             </div>
             <div className="space-y-2">
-              <Label>Badge (tùy chọn)</Label>
-              <Input value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} placeholder="Bestseller, Mới..." />
+              <Label>Badge (optional)</Label>
+              <Input value={form.badge} onChange={(e) => setForm({ ...form, badge: e.target.value })} placeholder="Bestseller, New..." />
             </div>
             <div className="flex items-center justify-between">
               <Label>Active</Label>
               <Switch checked={form.is_active} onCheckedChange={(v) => setForm({ ...form, is_active: v })} />
             </div>
             <Button className="w-full" onClick={saveProduct} disabled={saving}>
-              {saving ? 'Đang lưu...' : 'Lưu'}
+              {saving ? 'Saving...' : 'Save'}
             </Button>
           </div>
         </DialogContent>

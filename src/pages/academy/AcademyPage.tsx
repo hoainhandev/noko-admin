@@ -76,7 +76,7 @@ export function AcademyPage() {
     setSaving(false)
     if (error) toast.error(error.message)
     else {
-      toast.success('Đã cập nhật khóa học')
+      toast.success('Course updated')
       setEditing(null)
       fetchCourses()
     }
@@ -85,8 +85,8 @@ export function AcademyPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Quản lý khóa học</h1>
-        <p className="text-muted-foreground">4 khóa học Noko Academy</p>
+        <h1 className="text-2xl font-bold">Course Management</h1>
+        <p className="text-muted-foreground">4 Noko Academy courses</p>
       </div>
 
       {loading ? (
@@ -126,35 +126,35 @@ export function AcademyPage() {
       <Dialog open={!!editing} onOpenChange={() => setEditing(null)}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Chỉnh sửa khóa học</DialogTitle>
+            <DialogTitle>Edit Course</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label>Tên khóa học</Label>
+              <Label>Course name</Label>
               <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
             </div>
             <div className="space-y-2">
-              <Label>Mô tả</Label>
+              <Label>Description</Label>
               <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} rows={3} />
             </div>
             <div className="space-y-2">
-              <Label>Đối tượng</Label>
+              <Label>Target Audience</Label>
               <Input value={form.target} onChange={(e) => setForm({ ...form, target: e.target.value })} />
             </div>
             <div className="space-y-2">
-              <Label>Nội dung</Label>
+              <Label>Course Content</Label>
               <Textarea value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} rows={4} />
             </div>
             <div className="space-y-2">
-              <Label>Giá (VND)</Label>
+              <Label>Price (VND)</Label>
               <Input type="number" value={form.price} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} />
             </div>
             <div className="flex items-center justify-between">
-              <Label>Trạng thái active</Label>
+              <Label>Active status</Label>
               <Switch checked={form.is_active} onCheckedChange={(v) => setForm({ ...form, is_active: v })} />
             </div>
             <Button className="w-full" onClick={saveCourse} disabled={saving}>
-              {saving ? 'Đang lưu...' : 'Lưu thay đổi'}
+              {saving ? 'Saving...' : 'Save'}
             </Button>
           </div>
         </DialogContent>

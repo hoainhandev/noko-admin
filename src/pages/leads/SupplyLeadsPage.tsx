@@ -22,8 +22,8 @@ const statusVariant = (status: LeadStatus) => {
 }
 
 const posLabel = (pos: string) => {
-  if (pos === 'pos-user') return 'Có'
-  if (pos === 'supply-only') return 'Không'
+  if (pos === 'pos-user') return 'Yes'
+  if (pos === 'supply-only') return 'No'
   return pos
 }
 
@@ -85,7 +85,7 @@ export function SupplyLeadsPage() {
     setSaving(false)
     if (error) toast.error(error.message)
     else {
-      toast.success('Đã cập nhật trạng thái')
+      toast.success('Status updated')
       setSelected(null)
       fetchLeads()
     }
@@ -94,7 +94,7 @@ export function SupplyLeadsPage() {
   const exportCsv = () => {
     downloadCsv(
       'supply-leads.csv',
-      ['Tên nhà hàng', 'Họ tên', 'SĐT', 'Email', 'Tiểu bang', 'POS', 'Nhu cầu', 'Ngày', 'Trạng thái'],
+      ['Restaurant', 'Full Name', 'Phone', 'Email', 'State', 'POS', 'Needs', 'Date', 'Status'],
       filtered.map((l) => [
         l.restaurant_name,
         l.name,
@@ -127,12 +127,12 @@ export function SupplyLeadsPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center flex-wrap">
             <div className="relative flex-1 min-w-[200px]">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input className="pl-9" placeholder="Tìm theo tên, SĐT, nhà hàng..." value={search} onChange={(e) => setSearch(e.target.value)} />
+              <Input className="pl-9" placeholder="Search by name, phone, or restaurant..." value={search} onChange={(e) => setSearch(e.target.value)} />
             </div>
             <Select value={stateFilter} onValueChange={setStateFilter}>
-              <SelectTrigger className="w-full sm:w-32"><SelectValue placeholder="Tiểu bang" /></SelectTrigger>
+              <SelectTrigger className="w-full sm:w-32"><SelectValue placeholder="State" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
+                <SelectItem value="all">All</SelectItem>
                 {US_STATES.map((s) => (
                   <SelectItem key={s} value={s}>{s}</SelectItem>
                 ))}
@@ -141,18 +141,18 @@ export function SupplyLeadsPage() {
             <Select value={posFilter} onValueChange={setPosFilter}>
               <SelectTrigger className="w-full sm:w-36"><SelectValue placeholder="POS" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả POS</SelectItem>
-                <SelectItem value="pos-user">Đang dùng POS</SelectItem>
-                <SelectItem value="supply-only">Chưa dùng POS</SelectItem>
+                <SelectItem value="all">All POS</SelectItem>
+                <SelectItem value="pos-user">Using POS</SelectItem>
+                <SelectItem value="supply-only">Not using POS</SelectItem>
               </SelectContent>
             </Select>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-full sm:w-40"><SelectValue placeholder="Trạng thái" /></SelectTrigger>
+              <SelectTrigger className="w-full sm:w-40"><SelectValue placeholder="Status" /></SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Tất cả</SelectItem>
-                <SelectItem value="new">Mới</SelectItem>
-                <SelectItem value="contacted">Đã liên hệ</SelectItem>
-                <SelectItem value="registered">Đã đăng ký</SelectItem>
+                <SelectItem value="all">All</SelectItem>
+                <SelectItem value="new">New</SelectItem>
+                <SelectItem value="contacted">Contacted</SelectItem>
+                <SelectItem value="registered">Enrolled</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -167,16 +167,16 @@ export function SupplyLeadsPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border text-left text-muted-foreground">
-                    <th className="pb-3 pr-4 font-medium">Tên nhà hàng</th>
-                    <th className="pb-3 pr-4 font-medium">Họ tên</th>
-                    <th className="pb-3 pr-4 font-medium">SĐT</th>
+                    <th className="pb-3 pr-4 font-medium">Restaurant</th>
+                    <th className="pb-3 pr-4 font-medium">Full Name</th>
+                    <th className="pb-3 pr-4 font-medium">Phone</th>
                     <th className="pb-3 pr-4 font-medium">Email</th>
-                    <th className="pb-3 pr-4 font-medium">Tiểu bang</th>
+                    <th className="pb-3 pr-4 font-medium">State</th>
                     <th className="pb-3 pr-4 font-medium">POS?</th>
-                    <th className="pb-3 pr-4 font-medium">Nhu cầu</th>
-                    <th className="pb-3 pr-4 font-medium">Ngày</th>
-                    <th className="pb-3 pr-4 font-medium">Trạng thái</th>
-                    <th className="pb-3 font-medium">Hành động</th>
+                    <th className="pb-3 pr-4 font-medium">Needs</th>
+                    <th className="pb-3 pr-4 font-medium">Date</th>
+                    <th className="pb-3 pr-4 font-medium">Status</th>
+                    <th className="pb-3 font-medium">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -194,7 +194,7 @@ export function SupplyLeadsPage() {
                         <Badge variant={statusVariant(lead.status ?? 'new')}>{LEAD_STATUS_LABELS[lead.status ?? 'new']}</Badge>
                       </td>
                       <td className="py-3">
-                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); openDetail(lead) }}>Chi tiết</Button>
+                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); openDetail(lead) }}>View Details</Button>
                       </td>
                     </tr>
                   ))}
@@ -209,33 +209,33 @@ export function SupplyLeadsPage() {
       <Dialog open={!!selected} onOpenChange={() => setSelected(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Chi tiết lead Supply</DialogTitle>
+            <DialogTitle>Supply Lead Details</DialogTitle>
           </DialogHeader>
           {selected && (
             <div className="space-y-4">
               <div className="grid gap-2 text-sm">
-                <p><span className="text-muted-foreground">Nhà hàng:</span> {selected.restaurant_name}</p>
-                <p><span className="text-muted-foreground">Họ tên:</span> {selected.name}</p>
-                <p><span className="text-muted-foreground">SĐT:</span> {selected.phone}</p>
+                <p><span className="text-muted-foreground">Restaurant:</span> {selected.restaurant_name}</p>
+                <p><span className="text-muted-foreground">Full Name:</span> {selected.name}</p>
+                <p><span className="text-muted-foreground">Phone:</span> {selected.phone}</p>
                 <p><span className="text-muted-foreground">Email:</span> {selected.email}</p>
-                <p><span className="text-muted-foreground">Tiểu bang:</span> {selected.state ?? '—'}</p>
+                <p><span className="text-muted-foreground">State:</span> {selected.state ?? '—'}</p>
                 <p><span className="text-muted-foreground">POS:</span> {posLabel(selected.pos_status)}</p>
-                <p><span className="text-muted-foreground">Nhu cầu:</span> {(selected.needs ?? []).join(', ') || '—'}</p>
-                <p><span className="text-muted-foreground">Ngày:</span> {formatDateTime(selected.created_at)}</p>
+                <p><span className="text-muted-foreground">Needs:</span> {(selected.needs ?? []).join(', ') || '—'}</p>
+                <p><span className="text-muted-foreground">Date:</span> {formatDateTime(selected.created_at)}</p>
               </div>
               <div className="space-y-2">
-                <Label>Trạng thái</Label>
+                <Label>Status</Label>
                 <Select value={editStatus} onValueChange={(v) => setEditStatus(v as LeadStatus)}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="new">Mới</SelectItem>
-                    <SelectItem value="contacted">Đã liên hệ</SelectItem>
-                    <SelectItem value="registered">Đã đăng ký</SelectItem>
+                    <SelectItem value="new">New</SelectItem>
+                    <SelectItem value="contacted">Contacted</SelectItem>
+                    <SelectItem value="registered">Enrolled</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <Button className="w-full" onClick={saveStatus} disabled={saving}>
-                {saving ? 'Đang lưu...' : 'Lưu trạng thái'}
+                {saving ? 'Saving...' : 'Save Status'}
               </Button>
             </div>
           )}
