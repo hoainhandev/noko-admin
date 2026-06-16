@@ -2,6 +2,7 @@ import { Link, useLocation } from 'react-router'
 import {
   LayoutDashboard,
   Users,
+  MessageSquare,
   GraduationCap,
   Package,
   FileText,
@@ -14,7 +15,8 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/contexts/AuthContext'
 import { Separator } from '@/components/ui/separator'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
 
 const navItems = [
   { label: 'Dashboard', href: '/admin', icon: LayoutDashboard, exact: true },
@@ -35,9 +37,21 @@ const navItems = [
 export function Sidebar() {
   const location = useLocation()
   const { signOut } = useAuth()
+  const [unreadCount, setUnreadCount] = useState(0)
   const [leadsOpen, setLeadsOpen] = useState(
     location.pathname.startsWith('/admin/leads'),
   )
+
+  useEffect(() => {
+    async function loadUnreadCount() {
+      const { count } = await supabase
+        .from('contact_messages')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'new')
+      setUnreadCount(count ?? 0)
+    }
+    loadUnreadCount()
+  }, [location.pathname])
 
   const isActive = (href: string, exact = false) =>
     exact ? location.pathname === href : location.pathname.startsWith(href)
@@ -101,6 +115,22 @@ export function Sidebar() {
             </Link>
           )
         })}
+
+        <Link
+          to="/admin/contacts"
+          className={cn(
+            'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-sidebar-accent',
+            isActive('/admin/contacts') && 'bg-sidebar-accent text-primary',
+          )}
+        >
+          <MessageSquare className="h-4 w-4 shrink-0" />
+          <span className="flex-1">Liên hệ</span>
+          {unreadCount > 0 && (
+            <span className="rounded-full bg-red-500 px-2 py-0.5 text-xs font-semibold text-white">
+              {unreadCount}
+            </span>
+          )}
+        </Link>
 
         <Separator className="my-3" />
 

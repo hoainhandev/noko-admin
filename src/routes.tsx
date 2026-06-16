@@ -11,6 +11,7 @@ import { SupplyPage } from '@/pages/supply/SupplyPage'
 import { BlogListPage } from '@/pages/blog/BlogListPage'
 import { BlogEditorPage } from '@/pages/blog/BlogEditorPage'
 import { SettingsPage } from '@/pages/settings/SettingsPage'
+import { ContactListPage } from '@/pages/ContactList'
 
 export const router = createBrowserRouter([
   {
@@ -37,6 +38,7 @@ export const router = createBrowserRouter([
           { path: 'blog', element: <BlogListPage /> },
           { path: 'blog/new', element: <BlogEditorPage /> },
           { path: 'blog/:id', element: <BlogEditorPage /> },
+          { path: 'contacts', element: <ContactListPage /> },
           { path: 'settings', element: <SettingsPage /> },
         ],
       },
