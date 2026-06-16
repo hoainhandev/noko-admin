@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { RichTextEditor } from '@/components/editor/RichTextEditor'
+import { ImageUpload } from '@/components/ImageUpload'
 
 const BLOG_CATEGORIES = ['Tin tức', 'Hướng dẫn', 'Case study', 'Sản phẩm', 'Academy']
 
@@ -229,10 +230,11 @@ export function BlogEditorPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
-                <Label>Thumbnail URL</Label>
-                <Input value={form.thumbnail} onChange={(e) => setForm({ ...form, thumbnail: e.target.value })} placeholder="https://..." />
-              </div>
+              <ImageUpload
+                label="Thumbnail"
+                value={form.thumbnail}
+                onChange={(url) => setForm({ ...form, thumbnail: url })}
+              />
               <div className="space-y-2">
                 <Label>Trạng thái</Label>
                 <Select value={form.status} onValueChange={(v) => setForm({ ...form, status: v as BlogStatus })}>
