@@ -41,9 +41,11 @@ export function LoginPage() {
 
       <Card className="relative w-full max-w-md border-[#F5F0E8]/10 bg-[#1B2B6B]">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-[#F5F0E8] to-[#E8C97A] text-xl font-bold text-[#1B2B6B]">
-            N
-          </div>
+          <img
+            src="https://sdribtqccxzjpikspnnm.supabase.co/storage/v1/object/public/assets/logo-white.png"
+            alt="Noko"
+            className="h-12 w-auto object-contain mx-auto mb-8"
+          />
           <CardTitle className="text-2xl text-[#F5F0E8]">Noko Admin</CardTitle>
           <CardDescription className="text-[#C4BAA8]">Sign in with your @noko.com email</CardDescription>
         </CardHeader>

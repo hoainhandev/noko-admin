@@ -12,6 +12,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Pagination } from '@/components/Pagination'
+import {
+  DataTable,
+  DataTableBody,
+  DataTableEmpty,
+  DataTableHead,
+  DataTableRow,
+  DataTableTd,
+  DataTableTh,
+  TableActionButton,
+} from '@/components/DataTable'
 
 const PAGE_SIZE = 20
 
@@ -164,42 +174,46 @@ export function SupplyLeadsPage() {
             </div>
           ) : (
             <>
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border text-left text-muted-foreground">
-                    <th className="pb-3 pr-4 font-medium">Restaurant</th>
-                    <th className="pb-3 pr-4 font-medium">Full Name</th>
-                    <th className="pb-3 pr-4 font-medium">Phone</th>
-                    <th className="pb-3 pr-4 font-medium">Email</th>
-                    <th className="pb-3 pr-4 font-medium">State</th>
-                    <th className="pb-3 pr-4 font-medium">POS?</th>
-                    <th className="pb-3 pr-4 font-medium">Needs</th>
-                    <th className="pb-3 pr-4 font-medium">Date</th>
-                    <th className="pb-3 pr-4 font-medium">Status</th>
-                    <th className="pb-3 font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paginated.map((lead) => (
-                    <tr key={lead.id} className="cursor-pointer" onClick={() => openDetail(lead)}>
-                      <td className="py-3 pr-4 font-medium">{lead.restaurant_name}</td>
-                      <td className="py-3 pr-4">{lead.name}</td>
-                      <td className="py-3 pr-4">{lead.phone}</td>
-                      <td className="py-3 pr-4 text-muted-foreground">{lead.email}</td>
-                      <td className="py-3 pr-4">{lead.state ?? '—'}</td>
-                      <td className="py-3 pr-4">{posLabel(lead.pos_status)}</td>
-                      <td className="py-3 pr-4 max-w-[150px] truncate">{(lead.needs ?? []).join(', ')}</td>
-                      <td className="py-3 pr-4">{formatDateTime(lead.created_at)}</td>
-                      <td className="py-3 pr-4">
-                        <Badge variant={statusVariant(lead.status ?? 'new')}>{LEAD_STATUS_LABELS[lead.status ?? 'new']}</Badge>
-                      </td>
-                      <td className="py-3">
-                        <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); openDetail(lead) }}>View Details</Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <DataTable>
+                <DataTableHead>
+                  <DataTableTh>Restaurant</DataTableTh>
+                  <DataTableTh>Full Name</DataTableTh>
+                  <DataTableTh>Phone</DataTableTh>
+                  <DataTableTh>Email</DataTableTh>
+                  <DataTableTh>State</DataTableTh>
+                  <DataTableTh>POS?</DataTableTh>
+                  <DataTableTh>Needs</DataTableTh>
+                  <DataTableTh>Date</DataTableTh>
+                  <DataTableTh>Status</DataTableTh>
+                  <DataTableTh>Actions</DataTableTh>
+                </DataTableHead>
+                <DataTableBody>
+                  {paginated.length === 0 ? (
+                    <DataTableEmpty colSpan={10} />
+                  ) : (
+                    paginated.map((lead) => (
+                      <DataTableRow key={lead.id} onClick={() => openDetail(lead)}>
+                        <DataTableTd className="font-medium">{lead.restaurant_name}</DataTableTd>
+                        <DataTableTd>{lead.name}</DataTableTd>
+                        <DataTableTd>{lead.phone}</DataTableTd>
+                        <DataTableTd muted>{lead.email}</DataTableTd>
+                        <DataTableTd muted>{lead.state ?? '—'}</DataTableTd>
+                        <DataTableTd muted>{posLabel(lead.pos_status)}</DataTableTd>
+                        <DataTableTd className="max-w-[150px] truncate">{(lead.needs ?? []).join(', ')}</DataTableTd>
+                        <DataTableTd muted>{formatDateTime(lead.created_at)}</DataTableTd>
+                        <DataTableTd>
+                          <Badge variant={statusVariant(lead.status ?? 'new')}>{LEAD_STATUS_LABELS[lead.status ?? 'new']}</Badge>
+                        </DataTableTd>
+                        <DataTableTd>
+                          <TableActionButton onClick={(e) => { e.stopPropagation(); openDetail(lead) }}>
+                            View Details
+                          </TableActionButton>
+                        </DataTableTd>
+                      </DataTableRow>
+                    ))
+                  )}
+                </DataTableBody>
+              </DataTable>
               <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
             </>
           )}

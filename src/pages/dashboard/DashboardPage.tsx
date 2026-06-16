@@ -5,6 +5,15 @@ import { supabase } from '@/lib/supabase'
 import { formatDate, formatDateTime } from '@/lib/utils'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import {
+  DataTable,
+  DataTableBody,
+  DataTableEmpty,
+  DataTableHead,
+  DataTableRow,
+  DataTableTd,
+  DataTableTh,
+} from '@/components/DataTable'
 import type { AcademyRegistration, SupplyLead } from '@/types/database'
 
 interface StatCardProps {
@@ -187,38 +196,34 @@ export function DashboardPage() {
           <CardTitle className="text-[#F5F0E8]">5 latest leads</CardTitle>
         </CardHeader>
         <CardContent className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr>
-                <th className="pb-3 pr-4">Type</th>
-                <th className="pb-3 pr-4">Full Name</th>
-                <th className="pb-3 pr-4">Email</th>
-                <th className="pb-3 pr-4">Details</th>
-                <th className="pb-3">Date</th>
-              </tr>
-            </thead>
-            <tbody>
+          <DataTable>
+            <DataTableHead>
+              <DataTableTh>Type</DataTableTh>
+              <DataTableTh>Full Name</DataTableTh>
+              <DataTableTh>Email</DataTableTh>
+              <DataTableTh>Details</DataTableTh>
+              <DataTableTh>Date</DataTableTh>
+            </DataTableHead>
+            <DataTableBody>
               {recentLeads.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="py-8 text-center text-[#C4BAA8]">No leads yet</td>
-                </tr>
+                <DataTableEmpty colSpan={5} message="No leads yet" />
               ) : (
                 recentLeads.map((lead) => (
-                  <tr key={`${lead.type}-${lead.id}`}>
-                    <td className="py-3 pr-4">
-                      <Badge variant={lead.type === 'academy' ? 'success' : 'secondary'}>
+                  <DataTableRow key={`${lead.type}-${lead.id}`} interactive={false}>
+                    <DataTableTd>
+                      <Badge variant={lead.type === 'academy' ? 'enrolled' : 'secondary'}>
                         {lead.type === 'academy' ? 'Academy' : 'Supply'}
                       </Badge>
-                    </td>
-                    <td className="py-3 pr-4">{lead.name}</td>
-                    <td className="py-3 pr-4 text-[#C4BAA8]">{lead.email}</td>
-                    <td className="py-3 pr-4">{lead.detail}</td>
-                    <td className="py-3">{formatDateTime(lead.created_at)}</td>
-                  </tr>
+                    </DataTableTd>
+                    <DataTableTd className="font-medium">{lead.name}</DataTableTd>
+                    <DataTableTd muted>{lead.email}</DataTableTd>
+                    <DataTableTd>{lead.detail}</DataTableTd>
+                    <DataTableTd muted>{formatDateTime(lead.created_at)}</DataTableTd>
+                  </DataTableRow>
                 ))
               )}
-            </tbody>
-          </table>
+            </DataTableBody>
+          </DataTable>
         </CardContent>
       </Card>
     </div>

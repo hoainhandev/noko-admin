@@ -4,15 +4,30 @@ import { Search } from 'lucide-react'
 import { toast } from 'sonner'
 import { supabase } from '@/lib/supabase'
 import { formatDateTime } from '@/lib/utils'
-import { LEAD_STATUS_LABELS, type AcademyRegistration, type SupplyLead } from '@/types/database'
+import { LEAD_STATUS_LABELS, type AcademyRegistration, type LeadStatus, type SupplyLead } from '@/types/database'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { FilterTabs } from '@/components/FilterTabs'
+import {
+  DataTable,
+  DataTableBody,
+  DataTableEmpty,
+  DataTableHead,
+  DataTableRow,
+  DataTableTd,
+  DataTableTh,
+} from '@/components/DataTable'
 
 type CombinedLead =
   | (AcademyRegistration & { type: 'academy' })
   | (SupplyLead & { type: 'supply' })
+
+const statusVariant = (status: LeadStatus) => {
+  if (status === 'new') return 'warning' as const
+  if (status === 'contacted') return 'secondary' as const
+  return 'enrolled' as const
+}
 
 export function LeadsPage() {
   const [leads, setLeads] = useState<CombinedLead[]>([])
@@ -79,13 +94,15 @@ export function LeadsPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <CardTitle>{filtered.length} leads</CardTitle>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Tabs value={typeFilter} onValueChange={setTypeFilter}>
-                <TabsList>
-                  <TabsTrigger value="all">All</TabsTrigger>
-                  <TabsTrigger value="academy">Academy</TabsTrigger>
-                  <TabsTrigger value="supply">Supply</TabsTrigger>
-                </TabsList>
-              </Tabs>
+              <FilterTabs
+                value={typeFilter}
+                onValueChange={setTypeFilter}
+                items={[
+                  { value: 'all', label: 'All' },
+                  { value: 'academy', label: 'Academy' },
+                  { value: 'supply', label: 'Supply' },
+                ]}
+              />
               <div className="relative w-full sm:w-64">
                 <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input className="pl-9" placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} />
@@ -99,38 +116,44 @@ export function LeadsPage() {
               <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             </div>
           ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border text-left text-muted-foreground">
-                  <th className="pb-3 pr-4 font-medium">Type</th>
-                  <th className="pb-3 pr-4 font-medium">Full Name</th>
-                  <th className="pb-3 pr-4 font-medium">Phone</th>
-                  <th className="pb-3 pr-4 font-medium">Email</th>
-                  <th className="pb-3 pr-4 font-medium">Details</th>
-                  <th className="pb-3 pr-4 font-medium">Date</th>
-                  <th className="pb-3 font-medium">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((lead) => (
-                  <tr key={`${lead.type}-${lead.id}`} className="border-b border-border/50">
-                    <td className="py-3 pr-4">
-                      <Badge variant={lead.type === 'academy' ? 'default' : 'secondary'}>
-                        {lead.type === 'academy' ? 'Academy' : 'Supply'}
-                      </Badge>
-                    </td>
-                    <td className="py-3 pr-4 font-medium">{lead.name}</td>
-                    <td className="py-3 pr-4">{lead.phone}</td>
-                    <td className="py-3 pr-4 text-muted-foreground">{lead.email}</td>
-                    <td className="py-3 pr-4">
-                      {lead.type === 'academy' ? (lead.course ?? '—') : lead.restaurant_name}
-                    </td>
-                    <td className="py-3 pr-4">{formatDateTime(lead.created_at)}</td>
-                    <td className="py-3">{LEAD_STATUS_LABELS[lead.status ?? 'new']}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <DataTable>
+              <DataTableHead>
+                <DataTableTh>Type</DataTableTh>
+                <DataTableTh>Full Name</DataTableTh>
+                <DataTableTh>Phone</DataTableTh>
+                <DataTableTh>Email</DataTableTh>
+                <DataTableTh>Details</DataTableTh>
+                <DataTableTh>Date</DataTableTh>
+                <DataTableTh>Status</DataTableTh>
+              </DataTableHead>
+              <DataTableBody>
+                {filtered.length === 0 ? (
+                  <DataTableEmpty colSpan={7} />
+                ) : (
+                  filtered.map((lead) => (
+                    <DataTableRow key={`${lead.type}-${lead.id}`} interactive={false}>
+                      <DataTableTd>
+                        <Badge variant={lead.type === 'academy' ? 'enrolled' : 'secondary'}>
+                          {lead.type === 'academy' ? 'Academy' : 'Supply'}
+                        </Badge>
+                      </DataTableTd>
+                      <DataTableTd className="font-medium">{lead.name}</DataTableTd>
+                      <DataTableTd>{lead.phone}</DataTableTd>
+                      <DataTableTd muted>{lead.email}</DataTableTd>
+                      <DataTableTd>
+                        {lead.type === 'academy' ? (lead.course ?? '—') : lead.restaurant_name}
+                      </DataTableTd>
+                      <DataTableTd muted>{formatDateTime(lead.created_at)}</DataTableTd>
+                      <DataTableTd>
+                        <Badge variant={statusVariant(lead.status ?? 'new')}>
+                          {LEAD_STATUS_LABELS[lead.status ?? 'new']}
+                        </Badge>
+                      </DataTableTd>
+                    </DataTableRow>
+                  ))
+                )}
+              </DataTableBody>
+            </DataTable>
           )}
         </CardContent>
       </Card>

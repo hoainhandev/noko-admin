@@ -118,27 +118,6 @@
     @apply text-sm text-[#C4BAA8];
   }
 
-  main table thead th {
-    background: #0F1F52;
-    color: #C4BAA8;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-    letter-spacing: 0.04em;
-    font-weight: 500;
-  }
-
-  main table tbody tr {
-    border-bottom: 1px solid rgba(245, 240, 232, 0.08);
-  }
-
-  main table tbody tr:hover {
-    background: rgba(245, 240, 232, 0.03);
-  }
-
-  main table tbody td {
-    color: #F5F0E8;
-  }
-
   .tiptap-editor {
     background: #1F3075;
     color: #F5F0E8;

@@ -12,6 +12,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
 import { Pagination } from '@/components/Pagination'
+import {
+  DataTable,
+  DataTableBody,
+  DataTableEmpty,
+  DataTableHead,
+  DataTableRow,
+  DataTableTd,
+  DataTableTh,
+  TableActionButton,
+} from '@/components/DataTable'
 
 interface ContactMessage {
   id: string
@@ -197,51 +207,47 @@ export function ContactListPage() {
             </div>
           ) : (
             <>
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-border text-left text-muted-foreground">
-                    <th className="pb-3 pr-4 font-medium">Full Name</th>
-                    <th className="pb-3 pr-4 font-medium">Email</th>
-                    <th className="pb-3 pr-4 font-medium">Phone</th>
-                    <th className="pb-3 pr-4 font-medium">Interested In</th>
-                    <th className="pb-3 pr-4 font-medium">Message</th>
-                    <th className="pb-3 pr-4 font-medium">Submitted</th>
-                    <th className="pb-3 pr-4 font-medium">Status</th>
-                    <th className="pb-3 font-medium">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {paginated.map((m) => (
-                    <tr
-                      key={m.id}
-                      onClick={() => openDetail(m)}
-                      className="cursor-pointer"
-                    >
-                      <td className="py-3 pr-4 font-medium">{m.name}</td>
-                      <td className="py-3 pr-4 text-muted-foreground">{m.email}</td>
-                      <td className="py-3 pr-4">{m.phone ?? '—'}</td>
-                      <td className="py-3 pr-4">{getService(m)}</td>
-                      <td className="py-3 pr-4 max-w-[280px] truncate">{m.message}</td>
-                      <td className="py-3 pr-4">{formatDateTime(m.created_at)}</td>
-                      <td className="py-3 pr-4">
-                        <Badge variant={statusVariant(m.status)}>{CONTACT_STATUS_LABELS[m.status]}</Badge>
-                      </td>
-                      <td className="py-3">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            openDetail(m)
-                          }}
-                        >
-                          View Details
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              <DataTable>
+                <DataTableHead>
+                  <DataTableTh>Full Name</DataTableTh>
+                  <DataTableTh>Email</DataTableTh>
+                  <DataTableTh>Phone</DataTableTh>
+                  <DataTableTh>Interested In</DataTableTh>
+                  <DataTableTh>Message</DataTableTh>
+                  <DataTableTh>Submitted</DataTableTh>
+                  <DataTableTh>Status</DataTableTh>
+                  <DataTableTh>Actions</DataTableTh>
+                </DataTableHead>
+                <DataTableBody>
+                  {paginated.length === 0 ? (
+                    <DataTableEmpty colSpan={8} />
+                  ) : (
+                    paginated.map((m) => (
+                      <DataTableRow key={m.id} onClick={() => openDetail(m)}>
+                        <DataTableTd className="font-medium">{m.name}</DataTableTd>
+                        <DataTableTd muted>{m.email}</DataTableTd>
+                        <DataTableTd>{m.phone ?? '—'}</DataTableTd>
+                        <DataTableTd>{getService(m)}</DataTableTd>
+                        <DataTableTd className="max-w-[280px] truncate">{m.message}</DataTableTd>
+                        <DataTableTd muted>{formatDateTime(m.created_at)}</DataTableTd>
+                        <DataTableTd>
+                          <Badge variant={statusVariant(m.status)}>{CONTACT_STATUS_LABELS[m.status]}</Badge>
+                        </DataTableTd>
+                        <DataTableTd>
+                          <TableActionButton
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              openDetail(m)
+                            }}
+                          >
+                            View Details
+                          </TableActionButton>
+                        </DataTableTd>
+                      </DataTableRow>
+                    ))
+                  )}
+                </DataTableBody>
+              </DataTable>
               <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
             </>
           )}

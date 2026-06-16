@@ -8,7 +8,16 @@ import type { BlogPost } from '@/types/database'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { FilterTabs } from '@/components/FilterTabs'
+import {
+  DataTable,
+  DataTableBody,
+  DataTableEmpty,
+  DataTableHead,
+  DataTableRow,
+  DataTableTd,
+  DataTableTh,
+} from '@/components/DataTable'
 
 export function BlogListPage() {
   const [posts, setPosts] = useState<BlogPost[]>([])
@@ -49,13 +58,15 @@ export function BlogListPage() {
         </Button>
       </div>
 
-      <Tabs value={statusFilter} onValueChange={setStatusFilter}>
-        <TabsList>
-          <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="published">Published</TabsTrigger>
-          <TabsTrigger value="draft">Draft</TabsTrigger>
-        </TabsList>
-      </Tabs>
+      <FilterTabs
+        value={statusFilter}
+        onValueChange={setStatusFilter}
+        items={[
+          { value: 'all', label: 'All' },
+          { value: 'published', label: 'Published' },
+          { value: 'draft', label: 'Draft' },
+        ]}
+      />
 
       <Card>
         <CardHeader />
@@ -65,45 +76,41 @@ export function BlogListPage() {
               <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             </div>
           ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border text-left text-muted-foreground">
-                  <th className="pb-3 pr-4 font-medium">Title</th>
-                  <th className="pb-3 pr-4 font-medium">Category</th>
-                  <th className="pb-3 pr-4 font-medium">Date</th>
-                  <th className="pb-3 pr-4 font-medium">Status</th>
-                  <th className="pb-3 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
+            <DataTable>
+              <DataTableHead>
+                <DataTableTh>Title</DataTableTh>
+                <DataTableTh>Category</DataTableTh>
+                <DataTableTh>Date</DataTableTh>
+                <DataTableTh>Status</DataTableTh>
+                <DataTableTh>Actions</DataTableTh>
+              </DataTableHead>
+              <DataTableBody>
                 {filtered.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="py-8 text-center text-muted-foreground">No posts yet</td>
-                  </tr>
+                  <DataTableEmpty colSpan={5} message="No posts yet" />
                 ) : (
                   filtered.map((post) => (
-                    <tr key={post.id} className="border-b border-border/50">
-                      <td className="py-3 pr-4 font-medium max-w-xs truncate">{post.title}</td>
-                      <td className="py-3 pr-4">{post.category}</td>
-                      <td className="py-3 pr-4">{formatDate(post.published_at ?? post.created_at)}</td>
-                      <td className="py-3 pr-4">
-                        <Badge variant={post.status === 'published' ? 'success' : 'secondary'}>
+                    <DataTableRow key={post.id} interactive={false}>
+                      <DataTableTd className="font-medium max-w-xs truncate">{post.title}</DataTableTd>
+                      <DataTableTd>{post.category}</DataTableTd>
+                      <DataTableTd muted>{formatDate(post.published_at ?? post.created_at)}</DataTableTd>
+                      <DataTableTd>
+                        <Badge variant={post.status === 'published' ? 'enrolled' : 'secondary'}>
                           {post.status === 'published' ? 'Published' : 'Draft'}
                         </Badge>
-                      </td>
-                      <td className="py-3">
-                        <Button variant="ghost" size="sm" asChild>
-                          <Link to={`/admin/blog/${post.id}`}>
-                            <Pencil className="h-4 w-4" />
-                            Edit
-                          </Link>
-                        </Button>
-                      </td>
-                    </tr>
+                      </DataTableTd>
+                      <DataTableTd>
+                        <Link
+                          to={`/admin/blog/${post.id}`}
+                          className="inline-flex p-1.5 rounded-lg text-[#C4BAA8] hover:text-[#F5F0E8] hover:bg-[#F5F0E8]/10 transition-colors"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Link>
+                      </DataTableTd>
+                    </DataTableRow>
                   ))
                 )}
-              </tbody>
-            </table>
+              </DataTableBody>
+            </DataTable>
           )}
         </CardContent>
       </Card>

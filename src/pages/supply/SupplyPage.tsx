@@ -6,7 +6,17 @@ import { PRODUCT_CATEGORIES, type Product, type ProductCategory } from '@/types/
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { FilterTabs } from '@/components/FilterTabs'
+import {
+  DataTable,
+  DataTableBody,
+  DataTableEmpty,
+  DataTableHead,
+  DataTableRow,
+  DataTableTd,
+  DataTableTh,
+  TableActionButton,
+} from '@/components/DataTable'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -115,13 +125,11 @@ export function SupplyPage() {
         </Button>
       </div>
 
-      <Tabs value={category} onValueChange={setCategory}>
-        <TabsList className="flex-wrap h-auto">
-          {PRODUCT_CATEGORIES.map((cat) => (
-            <TabsTrigger key={cat} value={cat}>{cat}</TabsTrigger>
-          ))}
-        </TabsList>
-      </Tabs>
+      <FilterTabs
+        value={category}
+        onValueChange={setCategory}
+        items={PRODUCT_CATEGORIES.map((cat) => ({ value: cat, label: cat }))}
+      />
 
       <Card>
         <CardHeader />
@@ -131,45 +139,50 @@ export function SupplyPage() {
               <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             </div>
           ) : (
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-border text-left text-muted-foreground">
-                  <th className="pb-3 pr-4 font-medium">Product Name</th>
-                  <th className="pb-3 pr-4 font-medium">Category</th>
-                  <th className="pb-3 pr-4 font-medium">Unit</th>
-                  <th className="pb-3 pr-4 font-medium">Badge</th>
-                  <th className="pb-3 pr-4 font-medium">Status</th>
-                  <th className="pb-3 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((product) => (
-                  <tr key={product.id} className="border-b border-border/50">
-                    <td className="py-3 pr-4 font-medium">{product.name}</td>
-                    <td className="py-3 pr-4">{product.category}</td>
-                    <td className="py-3 pr-4">{product.unit}</td>
-                    <td className="py-3 pr-4">
-                      {product.badge ? <Badge variant="outline">{product.badge}</Badge> : '—'}
-                    </td>
-                    <td className="py-3 pr-4">
-                      <Badge variant={product.is_active ? 'success' : 'secondary'}>
-                        {product.is_active ? 'Active' : 'Inactive'}
-                      </Badge>
-                    </td>
-                    <td className="py-3">
-                      <div className="flex gap-1">
-                        <Button variant="ghost" size="sm" onClick={() => openEdit(product)}>
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" className="text-destructive" onClick={() => deleteProduct(product)}>
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <DataTable>
+              <DataTableHead>
+                <DataTableTh>Product Name</DataTableTh>
+                <DataTableTh>Category</DataTableTh>
+                <DataTableTh>Unit</DataTableTh>
+                <DataTableTh>Badge</DataTableTh>
+                <DataTableTh>Status</DataTableTh>
+                <DataTableTh>Actions</DataTableTh>
+              </DataTableHead>
+              <DataTableBody>
+                {filtered.length === 0 ? (
+                  <DataTableEmpty colSpan={6} />
+                ) : (
+                  filtered.map((product) => (
+                    <DataTableRow key={product.id} interactive={false}>
+                      <DataTableTd className="font-medium">{product.name}</DataTableTd>
+                      <DataTableTd>{product.category}</DataTableTd>
+                      <DataTableTd muted>{product.unit}</DataTableTd>
+                      <DataTableTd>
+                        {product.badge ? <Badge variant="outline">{product.badge}</Badge> : '—'}
+                      </DataTableTd>
+                      <DataTableTd>
+                        <Badge variant={product.is_active ? 'enrolled' : 'secondary'}>
+                          {product.is_active ? 'Active' : 'Inactive'}
+                        </Badge>
+                      </DataTableTd>
+                      <DataTableTd>
+                        <div className="flex gap-1">
+                          <TableActionButton onClick={() => openEdit(product)}>
+                            <Pencil className="h-4 w-4" />
+                          </TableActionButton>
+                          <TableActionButton
+                            className="hover:text-red-400"
+                            onClick={() => deleteProduct(product)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </TableActionButton>
+                        </div>
+                      </DataTableTd>
+                    </DataTableRow>
+                  ))
+                )}
+              </DataTableBody>
+            </DataTable>
           )}
         </CardContent>
       </Card>
