@@ -63,15 +63,18 @@ export function Sidebar() {
 
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-60 flex-col border-r border-[#F5F0E8]/10 bg-[#0F1F52]">
-      <div className="flex h-16 items-center gap-3 border-b border-[#F5F0E8]/10 px-5">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-[#F5F0E8] to-[#E8C97A] text-sm font-bold text-[#1B2B6B]">
-          N
+      <Link to="/admin" className="flex h-16 items-center border-b border-[#F5F0E8]/10 px-5">
+        <div className="flex flex-col items-start">
+          <img
+            src="https://sdribtqccxzjpikspnnm.supabase.co/storage/v1/object/public/assets/logo-footer.png"
+            alt="Noko"
+            className="h-6 w-auto max-w-full object-contain"
+          />
+          <span className="text-[10px] text-[#C4BAA8] uppercase tracking-widest mt-0.5">
+            Admin
+          </span>
         </div>
-        <div>
-          <p className="text-sm font-semibold text-[#F5F0E8]">Noko Admin</p>
-          <p className="text-xs text-[#C4BAA8]">Dashboard</p>
-        </div>
-      </div>
+      </Link>
 
       <nav className="flex-1 space-y-1 overflow-y-auto p-3">
         {navItems.map((item) => {
